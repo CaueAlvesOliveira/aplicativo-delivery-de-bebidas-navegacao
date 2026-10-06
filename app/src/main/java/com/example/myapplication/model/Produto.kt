@@ -1,9 +1,11 @@
 package com.example.myapplication.model
 
 data class Produto(
+    val id: Int,
     val nome: String,
     val volume: String,
-    val preco: String,
+    val preco: Double,
     val imagem: Int,
-    val desconto: String? = null
+    val desconto: String? = null,
+    val categoriaId: Int
 )

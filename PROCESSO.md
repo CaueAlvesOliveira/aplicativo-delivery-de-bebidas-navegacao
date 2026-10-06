@@ -12,3 +12,15 @@ Durante a primeira parte do trabalho foram desenvolvidas 3 telas que não implem
 A tela de perfil não estava no esboço original da aplicação e por isso fica comentado por enquanto, no futuro pode ser adicionado como uma tela independente. Além disso, os arquivos das telas no diretório 'screens' foram criados, porém apenas a tela de pagamento teve seu desenvolvimento iniciado e não está completa.
 
 ![print da tela de pagamento protótipo](anexos/processo/prints/Captura%20de%20tela%202026-10-01%20234848.png)
+
+# Tela Inicial
+
+A primeira modificação em relação a primeira parte do trabalho será transformar as listas de produtos e categorias (que são estáticas) em listas mutáveis, para no futuro criar o CRUD dessas classes. Modificamos as classes de produtos e categorias para terem id e categoriaId, e adicionamos o viewModel com init dos dados que já existiam anteriormente, junto dos métodos do CRUD.
+
+![print do init no ViewModel](anexos/processo/prints/viewModel1.png)
+
+![print dos metodos do CRUD no ViewModel](anexos/processo/prints/viewModel2.png)
+
+Em seguida mudamos o appNavigation para criar o navController e ViewModel que serão passados para as telas como parâmetros. Agora as funções que antes utilizavam as listas estáticas criadas no próprio arquivo da tela inicial apenas chamam as funções do ViewModel. Visualmente a tela continua igual, porém com um fluxo diferente do anterior, e também o aplicativo abre automaticamente na tela inicial.
+
+![print da tela inicial com as listas mutáveis](anexos/processo/prints/TelaInicialListasMutaveis.png)

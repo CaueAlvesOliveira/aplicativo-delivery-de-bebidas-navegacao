@@ -39,6 +39,14 @@ class LojaViewModel : ViewModel() {
         adicionarProduto("Coca Cola", "2L", 9.90, R.drawable.refrigerante, "35", refrigerante)
     }
 
+    fun produtosOferta(): List<Produto> {
+        return produtos.filter { !it.desconto.isNullOrBlank() }
+    }
+
+    fun produtosNormais(): List<Produto> {
+        return produtos.filter { it.desconto.isNullOrBlank() }
+    }
+
     fun adicionarProduto(nome: String, volume: String, preco: Double, imagem: Int, desconto: String, categoriaId: Int) {
         produtos.add(Produto(gerarIdDoProduto(), nome, volume, preco, imagem, desconto, categoriaId))
     }

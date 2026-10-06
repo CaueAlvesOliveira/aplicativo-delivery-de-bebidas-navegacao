@@ -53,41 +53,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.model.Categoria
 import com.example.myapplication.model.Produto
+import com.example.myapplication.viewmodel.LojaViewModel
+import java.util.Locale
 
 @Preview
 @Composable
-fun telaInicio() {
-
-    val categorias = listOf<Categoria>(
-        Categoria("Cerveja", R.drawable.sports_bar_24dp_e3e3e3_fill0_wght400_grad0_opsz24, Color(0xFF29B6F6)),
-        Categoria("Vinho", R.drawable.wine_bar_24, Color(0xFF7E57C2)),
-        Categoria("Destilada", R.drawable.liquor_24, Color(0xFFFF7043)),
-        Categoria("Gelo", R.drawable.ice_24, Color(0xFF66BB6A)),
-        Categoria("Refrigerante", R.drawable.water_full_24dp_e3e3e3_fill0_wght400_grad0_opsz24, Color(0xFF8D6E63))
+fun TelaInicioPreview() {
+    telaInicio(
+        navController = rememberNavController(),
+        viewModel = LojaViewModel()
     )
+}
 
-    val produtos = listOf<Produto>(
-        Produto("Puro Malte", "350ml", "4,90", R.drawable.puro_malte),
-        Produto("Vinho Tinto", "750ml", "32,90", R.drawable.vinho),
-        Produto("Energético", "2L", "22,90", R.drawable.energetico),
-        Produto("Cerveja Long Neck", "355ml", "7,90", R.drawable.cerveja),
-        Produto("Whisky", "1L", "89,90", R.drawable.whisky),
-    )
-
-    val produtosOferta = listOf<Produto>(
-        Produto("Vodka", "1L", "45,90", R.drawable.vodka, "20"),
-        Produto("Gin", "750ml", "79,90", R.drawable.gin, "10"),
-        Produto("Cachaça", "700ml", "24,90", R.drawable.cachaca, "30"),
-        Produto("Coca Cola", "2L", "9,90", R.drawable.refrigerante, "35")
-    )
-
+@Composable
+fun telaInicio(navController: NavController, viewModel: LojaViewModel) {
     Scaffold(
         bottomBar = {
             BarraDeNavegacaoInferior()
-        }
+        },
+        contentColor = Color.Black
     ) {innerPadding ->
 
         Surface(
@@ -119,7 +108,7 @@ fun telaInicio() {
 
                 Spacer(Modifier.height(16.dp))
 
-                ListaCategorias(categorias)
+                ListaCategorias(viewModel.categorias)
 
                 Spacer(Modifier.height(20.dp))
 
@@ -127,11 +116,11 @@ fun telaInicio() {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                ListaMaisPedidos(produtos)
+                ListaMaisPedidos(viewModel.produtosNormais())
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                ListaOfertas(produtosOferta)
+                ListaOfertas(viewModel.produtosOferta())
             }
         }
 
@@ -371,7 +360,7 @@ fun CardProduto(produto: Produto) {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = produto.preco,
+                    text = String.format(Locale.forLanguageTag("pt-BR"), "R$ %.2f", produto.preco),
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
                 )
@@ -451,7 +440,7 @@ fun CardProdutoOferta(produto: Produto) {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = produto.preco,
+                    text = String.format(Locale.forLanguageTag("pt-BR"), "R$ %.2f", produto.preco),
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
                 )

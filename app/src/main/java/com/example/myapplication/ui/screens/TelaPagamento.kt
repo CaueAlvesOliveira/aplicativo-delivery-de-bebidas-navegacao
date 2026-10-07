@@ -34,13 +34,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.viewmodel.LojaViewModel
 
 
 @Composable
-@Preview
-fun TelaPagamento(){
+fun TelaPagamento(navController: NavController){
 
     Scaffold(){ innerPadding ->
 
@@ -59,10 +61,16 @@ fun TelaPagamento(){
                 CardsModeloPagamento()
                 CardResumo()
                 Spacer(modifier = Modifier.padding(0.dp, 70.dp))
-                BotaoConfirmarPagamento()
+                BotaoConfirmarPagamento(navController)
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun TelaPagamentoPreview() {
+    TelaPagamento(rememberNavController())
 }
 
 @Composable
@@ -207,7 +215,7 @@ fun CardResumo(viewModel: LojaViewModel = viewModel()){
 }
 
 @Composable
-fun BotaoConfirmarPagamento(){
+fun BotaoConfirmarPagamento(navController: NavController){
 
     Column(
         modifier = Modifier.padding(16.dp, 15.dp),
@@ -215,7 +223,13 @@ fun BotaoConfirmarPagamento(){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = {},
+            onClick = {
+                try {
+                    navController.navigate("rastreio")
+                } catch (_: Exception) {
+                    throw Exception("Erro ao navegar para a tela de rastreio")
+                }
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(255, 112, 67, 255)
             ),

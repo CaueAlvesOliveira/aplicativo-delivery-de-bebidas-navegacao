@@ -30,7 +30,7 @@ fun NavagacaoEntreTela() {
         composable(Rotas.PRODUTO){ TelaProduto() }
         //composable("perfil"){ telaInicio() }
         composable(Rotas.CARRINHO){ TelaCarrinho() }
-        composable(Rotas.PAGAMENTO){ TelaPagamento() }
+        composable(Rotas.PAGAMENTO){ TelaPagamento(navInterno) }
         composable(Rotas.ENTREGA){ TelaEntrega() }
         composable(Rotas.RASTREIO){ TelaRastreio() }
         composable(Rotas.PRODUTOS_POR_CATEGORIA){ TelaProdutoPorCategoria() }

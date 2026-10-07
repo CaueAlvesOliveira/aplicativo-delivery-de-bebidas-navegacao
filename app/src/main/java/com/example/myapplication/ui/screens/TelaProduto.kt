@@ -105,6 +105,7 @@ fun TelaProduto(
                     produto = produto,
                     quantidade = quantidade,
                     onAdicionar = {
+                        viewModel.adicionarAoCarrinho(produto.id, quantidade)
                         Toast.makeText(contexto, "Produto adicionado ao carrinho", Toast.LENGTH_SHORT).show()
                         irParaCarrinho()
                     }

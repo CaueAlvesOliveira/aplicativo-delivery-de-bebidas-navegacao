@@ -1,14 +1,12 @@
 package com.example.myapplication.navegacao
 
 import androidx.compose.runtime.Composable
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.navegacao.rotas.Rotas
 import com.example.myapplication.ui.screens.TelaCarrinho
-import com.example.myapplication.ui.screens.TelaEntrega
 import com.example.myapplication.ui.screens.TelaFormCategoria
 import com.example.myapplication.ui.screens.TelaFormProduto
 import com.example.myapplication.ui.screens.TelaListaCategorias
@@ -56,9 +54,12 @@ fun NavagacaoEntreTela() {
                 onVoltar = {navInterno.popBackStack()})
         }
         //composable("perfil"){ telaInicio() }
-        composable(Rotas.CARRINHO){ TelaCarrinho() }
+        composable(Rotas.CARRINHO){ TelaCarrinho(
+            viewModel,
+            onVoltar = {navInterno.popBackStack()},
+            onIrParaPagamento = {navInterno.navigate(Rotas.PAGAMENTO)}
+        ) }
         composable(Rotas.PAGAMENTO){ TelaPagamento(onVoltar = {navInterno.popBackStack()}) }
-        composable(Rotas.ENTREGA){ TelaEntrega() }
         composable(Rotas.RASTREIO){ TelaRastreio(onVoltar = {navInterno.popBackStack()}) }
         composable(Rotas.CATEGORIAS) {
             TelaListaCategorias(

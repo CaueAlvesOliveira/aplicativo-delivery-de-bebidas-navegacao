@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.example.myapplication.R
 import com.example.myapplication.model.Categoria
+import com.example.myapplication.model.ItemCarrinho
 import com.example.myapplication.model.Produto
 
 class LojaViewModel : ViewModel() {
@@ -12,6 +13,8 @@ class LojaViewModel : ViewModel() {
     val produtos = mutableStateListOf<Produto>()
 
     val categorias = mutableStateListOf<Categoria>()
+
+    val carrinho = mutableStateListOf<ItemCarrinho>()
 
     init {
 
@@ -120,6 +123,28 @@ class LojaViewModel : ViewModel() {
     fun buscarCategoria(id: Int): Categoria? {
         return categorias.find { it.id == id }
     }
+
+    fun adicionarAoCarrinho(produtoId: Int, quantidade: Int = 1) {
+        val i = carrinho.indexOfFirst { it.produtoId == produtoId }
+        if (i == -1) {
+            carrinho.add(ItemCarrinho(produtoId, quantidade))
+        } else {
+            carrinho[i] = carrinho[i].copy(quantidade = carrinho[i].quantidade + quantidade)
+        }
+    }
+
+    fun alterarQuantidadeNoCarrinho(produtoId: Int, quantidade: Int) {
+        if (quantidade <= 0) { removerDoCarrinho(produtoId); return }
+        val i = carrinho.indexOfFirst { it.produtoId == produtoId }
+        if (i != -1) carrinho[i] = carrinho[i].copy(quantidade = quantidade)
+    }
+
+    fun removerDoCarrinho(produtoId: Int) {
+        carrinho.removeAll { it.produtoId == produtoId }
+    }
+
+    fun subtotalCarrinho(): Double =
+        carrinho.sumOf { (buscarProduto(it.produtoId)?.preco ?: 0.0) * it.quantidade }
 
     private fun gerarIdDoProduto(): Int {
         if (produtos.isEmpty()) {

@@ -38,22 +38,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
+import com.example.myapplication.ui.components.BotaoVoltar
+import com.example.myapplication.ui.components.CabecalhoTela
 import kotlin.random.Random
 
 
 @Composable
-@Preview
-fun TelaPagamento(){
+fun TelaPagamento(onVoltar:() -> Unit){
 
     Scaffold(){ innerPadding ->
-
-        Column( modifier = Modifier.padding(innerPadding)) {
-            Row(
-                modifier = Modifier.padding(16.dp, 15.dp, 10.dp, 0.dp)
-            ) {
-                BotaoVoltar()
-                TextoTitulo()
-            }
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            CabecalhoTela("Pagamento", onVoltar)
 
             Column(
                 verticalArrangement = Arrangement.Center,

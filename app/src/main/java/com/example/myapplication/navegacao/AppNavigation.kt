@@ -1,6 +1,7 @@
 package com.example.myapplication.navegacao
 
 import androidx.compose.runtime.Composable
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,7 +28,14 @@ fun NavagacaoEntreTela() {
         startDestination = Rotas.HOME
     ) {
         composable(Rotas.HOME){ telaInicio(navInterno, viewModel) }
-        composable(Rotas.PRODUTO){ TelaProduto() }
+        composable(Rotas.PRODUTO){backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: -1
+            TelaProduto(
+                id,
+                viewModel,
+                onVoltar = {navInterno.popBackStack()},
+                irParaCarrinho = {navInterno.navigate(Rotas.CARRINHO)})
+        }
         //composable("perfil"){ telaInicio() }
         composable(Rotas.CARRINHO){ TelaCarrinho() }
         composable(Rotas.PAGAMENTO){ TelaPagamento() }

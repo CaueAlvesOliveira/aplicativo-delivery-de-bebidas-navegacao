@@ -27,10 +27,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,55 +48,74 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
+import com.example.myapplication.model.Produto
+import com.example.myapplication.viewmodel.LojaViewModel
+import java.util.Locale
 
-@Preview
 @Composable
-fun TelaProduto() {
+fun TelaProduto(
+    produtoId: Int,
+    viewModel: LojaViewModel,
+    onVoltar: () -> Unit,
+    irParaCarrinho: () -> Unit
+) {
+    val produto = viewModel.buscarProduto(produtoId)
+
+    if (produto == null) {
+        LaunchedEffect(Unit) { onVoltar() }
+        return
+    }
+
+    var quantidade by rememberSaveable { mutableIntStateOf(1) }
+    val contexto = LocalContext.current
+
     Scaffold { innerPadding ->
         Surface(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            color = Color(0xFFECECEC)
+            modifier = Modifier.padding(innerPadding).fillMaxSize(),
+            color = Color(0xFFECECEC),
+            contentColor = Color.Black
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
+                modifier = Modifier.fillMaxSize().padding(16.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    BotaoVoltar()
+                    BotaoVoltar(onVoltar)
                     BotaoFavorito()
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
+                ImagemProduto(produto)
+                Spacer(Modifier.height(20.dp))
+                InformacoesProduto(produto)
+                Spacer(Modifier.height(20.dp))
 
-                ImagemProduto()
+                SeletorQuantidade(
+                    quantidade = quantidade,
+                    onQuantidadeChange = { quantidade = it }
+                )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(Modifier.weight(1f))
 
-                InformacoesProduto()
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                SeletorQuantidade()
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                RodapeCompra()
+                RodapeCompra(
+                    produto = produto,
+                    quantidade = quantidade,
+                    onAdicionar = {
+                        Toast.makeText(contexto, "Produto adicionado ao carrinho", Toast.LENGTH_SHORT).show()
+                        irParaCarrinho()
+                    }
+                )
             }
         }
     }
 }
-
 @Composable
-fun BotaoVoltar() {
+fun BotaoVoltar(onClick: () -> Unit) {
     IconButton(
-        onClick = {},
+        onClick = onClick,
         modifier = Modifier
             .size(48.dp)
             .background(Color(255,255,255), shape = CircleShape)
@@ -129,7 +150,7 @@ fun BotaoFavorito() {
 }
 
 @Composable
-fun ImagemProduto() {
+fun ImagemProduto(produto: Produto) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -140,8 +161,8 @@ fun ImagemProduto() {
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(id = R.drawable.puro_malte),
-            contentDescription = "Cerveja Puro Malte 350ml",
+            painter = painterResource(id = produto.imagem),
+            contentDescription = produto.nome,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Fit
         )
@@ -149,10 +170,10 @@ fun ImagemProduto() {
 }
 
 @Composable
-fun InformacoesProduto() {
+fun InformacoesProduto(produto: Produto) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = "CERVEJARIA NOTURNA",
+            text = produto.estabelecimento,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF5B8DEF)
@@ -161,7 +182,7 @@ fun InformacoesProduto() {
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = "Cerveja Puro Malte",
+            text = produto.nome,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
@@ -169,15 +190,13 @@ fun InformacoesProduto() {
         Spacer(modifier = Modifier.height(12.dp))
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TagProduto(texto = "350ml",  color = Color.Gray)
-            TagProduto(texto = "4,7% álcool",  color = Color.Gray)
-            TagProduto(texto = "sempre gelada", color = Color.Green)
+            TagProduto(texto = produto.volume,  color = Color.Gray)
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Lager leve e refrescante, com final seco e pouco amargor. Ideal pra abrir a noite.",
+            text = produto.descricao,
             fontSize = 14.sp,
             color = Color(0xFF3D3D3D)
         )
@@ -201,9 +220,10 @@ fun TagProduto(texto: String, color: Color) {
 }
 
 @Composable
-fun SeletorQuantidade() {
-    var quantidade by remember { mutableIntStateOf(1) }
-
+fun SeletorQuantidade(
+    quantidade: Int,
+    onQuantidadeChange: (Int) -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -224,7 +244,7 @@ fun SeletorQuantidade() {
             BotaoQuantidade(
                 icone = R.drawable.remove_24,
                 descricao = "Diminuir quantidade",
-                onClick = { if (quantidade > 1) quantidade-- }
+                onClick = { if (quantidade > 1) onQuantidadeChange(quantidade - 1) }
             )
 
             Text(
@@ -238,7 +258,7 @@ fun SeletorQuantidade() {
             BotaoQuantidade(
                 icone = R.drawable.add_24,
                 descricao = "Aumentar quantidade",
-                onClick = { quantidade++ }
+                onClick = { onQuantidadeChange(quantidade + 1) }
             )
         }
     }
@@ -264,33 +284,30 @@ fun BotaoQuantidade(icone: Int, descricao: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun RodapeCompra() {
-
-    val contexto = LocalContext.current
-
+fun RodapeCompra(produto: Produto, quantidade: Int, onAdicionar: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column {
+            if (!produto.desconto.isNullOrBlank()) {
+                Text(
+                    text = String.format(Locale.forLanguageTag("pt-BR"), "R$ %.2f", produto.preco),
+                    fontSize = 13.sp,
+                    color = Color.Gray,
+                    textDecoration = TextDecoration.LineThrough
+                )
+            }
             Text(
-                text = "R$ 5,90",
-                fontSize = 13.sp,
-                color = Color.Gray,
-                textDecoration = TextDecoration.LineThrough
-            )
-            Text(
-                text = "R$ 4,90",
+                text = String.format(Locale.forLanguageTag("pt-BR"), "R$ %.2f", produto.preco * quantidade),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
         }
 
         Button(
-            onClick = {
-                Toast.makeText(contexto, "Produto Adicionado ao carrinho", Toast.LENGTH_SHORT).show()
-            },
+            onClick = onAdicionar,
             shape = RoundedCornerShape(50),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF7043)),
             modifier = Modifier.width(160.dp)

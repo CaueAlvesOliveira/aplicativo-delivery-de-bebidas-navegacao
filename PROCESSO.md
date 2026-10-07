@@ -24,3 +24,7 @@ A primeira modificação em relação a primeira parte do trabalho será transfo
 Em seguida mudamos o appNavigation para criar o navController e ViewModel que serão passados para as telas como parâmetros. Agora as funções que antes utilizavam as listas estáticas criadas no próprio arquivo da tela inicial apenas chamam as funções do ViewModel. Visualmente a tela continua igual, porém com um fluxo diferente do anterior, e também o aplicativo abre automaticamente na tela inicial.
 
 ![print da tela inicial com as listas mutáveis](anexos/processo/prints/TelaInicialListasMutaveis.png)
+
+Em seguida criamos a navegação dos cards dos produtos, agora quando clicamos em card somos direcionados a tela de detalhes do produto com informações específicas dele. Abaixo segue o vídeo demonstrando essa parte:
+
+[![video das cards](https://drive.google.com/file/d/1lYTXZ0beDkiBo1q8j-sM-e2JDRqZAnHU/view?usp=sharing)](https://drive.google.com/file/d/1lYTXZ0beDkiBo1q8j-sM-e2JDRqZAnHU/view?usp=sharing)

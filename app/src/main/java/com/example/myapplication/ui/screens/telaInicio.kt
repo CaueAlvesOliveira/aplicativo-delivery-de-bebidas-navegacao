@@ -58,6 +58,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.model.Categoria
 import com.example.myapplication.model.Produto
+import com.example.myapplication.navegacao.rotas.Rotas
 import com.example.myapplication.viewmodel.LojaViewModel
 import java.util.Locale
 
@@ -116,11 +117,19 @@ fun telaInicio(navController: NavController, viewModel: LojaViewModel) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                ListaMaisPedidos(viewModel.produtosNormais())
+                ListaMaisPedidos(
+                    viewModel.produtosNormais(),
+                    onProdutoClick = {id -> navController.navigate(Rotas.produto(id))},
+                    onAdicionar = {}
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                ListaOfertas(viewModel.produtosOferta())
+                ListaOfertas(
+                    viewModel.produtosOferta(),
+                    onProdutoClick = {id -> navController.navigate(Rotas.produto(id))},
+                    onAdicionar = {}
+                )
             }
         }
 
@@ -307,7 +316,11 @@ fun CardDeDesconto() {
 }
 
 @Composable
-fun ListaMaisPedidos(produtos: List<Produto>) {
+fun ListaMaisPedidos(
+    produtos: List<Produto>,
+    onProdutoClick: (Int) -> Unit,
+    onAdicionar: (Int) -> Unit
+    ) {
     Column {
         Text(
             text = "Mais pedidos por aqui",
@@ -319,20 +332,28 @@ fun ListaMaisPedidos(produtos: List<Produto>) {
 
         LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             items(produtos) { produto ->
-                CardProduto(produto)
+                CardProduto(
+                    produto,
+                    onClick = {onProdutoClick(produto.id)},
+                    onAdicionar = {onAdicionar(produto.id)}
+                )
             }
         }
     }
 }
 
 @Composable
-fun CardProduto(produto: Produto) {
+fun CardProduto(
+    produto: Produto,
+    onClick: () -> Unit,
+    onAdicionar: () -> Unit
+) {
     Box(
         modifier = Modifier
             .width(140.dp)
             .background(Color.White, shape = RoundedCornerShape(10.dp))
             .padding(bottom = 8.dp)
-            .clickable{}
+            .clickable{onClick()}
     ) {
         Column {
             Image(
@@ -374,7 +395,7 @@ fun CardProduto(produto: Produto) {
                 .padding(end = 8.dp, bottom = 4.dp)
                 .size(24.dp)
                 .background(Color(0xFFFF7043), shape = CircleShape)
-                .clickable {}
+                .clickable{onAdicionar()}
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.add_24),
@@ -387,7 +408,11 @@ fun CardProduto(produto: Produto) {
 }
 
 @Composable
-fun ListaOfertas(produtos: List<Produto>) {
+fun ListaOfertas(
+    produtos: List<Produto>,
+    onProdutoClick: (Int) -> Unit,
+    onAdicionar: (Int) -> Unit
+) {
     Column() {
         Text(
             text = "Ofertas da Semana",
@@ -399,20 +424,28 @@ fun ListaOfertas(produtos: List<Produto>) {
 
         LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             items(produtos) {produto ->
-                CardProdutoOferta(produto)
+                CardProdutoOferta(
+                    produto,
+                    onClick = {onProdutoClick(produto.id)},
+                    onAdicionar = {onAdicionar(produto.id)}
+                )
             }
         }
     }
 }
 
 @Composable
-fun CardProdutoOferta(produto: Produto) {
+fun CardProdutoOferta(
+    produto: Produto,
+    onClick: () -> Unit,
+    onAdicionar: () -> Unit
+) {
     Box(
         modifier = Modifier
             .width(140.dp)
             .background(Color.White, shape = RoundedCornerShape(10.dp))
             .padding(bottom = 8.dp)
-            .clickable{}
+            .clickable{onClick()}
     ) {
         Column {
             Image(
@@ -454,7 +487,7 @@ fun CardProdutoOferta(produto: Produto) {
                 .padding(end = 8.dp, bottom = 4.dp)
                 .size(24.dp)
                 .background(Color(0xFFFF7043), shape = CircleShape)
-                .clickable {}
+                .clickable {onAdicionar()}
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.add_24),

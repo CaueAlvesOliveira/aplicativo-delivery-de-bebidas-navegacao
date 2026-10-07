@@ -77,6 +77,15 @@ fun NavagacaoEntreTela() {
                 onVoltar = { navInterno.popBackStack() }
             )
         }
-        composable(Rotas.PRODUTOS_POR_CATEGORIA) {navInterno.navigate(Rotas.PRODUTOS_POR_CATEGORIA)}
+
+        composable(Rotas.PRODUTOS_POR_CATEGORIA) { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: -1
+            TelaProdutoPorCategoria(
+                id,
+                viewModel,
+                onVoltar = { navInterno.popBackStack() },
+                onProdutoClick = { produtoId -> navInterno.navigate(Rotas.produto(produtoId)) }
+            )
+        }
     }
 }

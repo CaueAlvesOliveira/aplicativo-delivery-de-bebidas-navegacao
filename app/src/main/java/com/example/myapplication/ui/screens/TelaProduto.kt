@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.model.Produto
+import com.example.myapplication.ui.components.BotaoVoltar
 import com.example.myapplication.viewmodel.LojaViewModel
 import java.util.Locale
 
@@ -110,22 +111,6 @@ fun TelaProduto(
                 )
             }
         }
-    }
-}
-@Composable
-fun BotaoVoltar(onClick: () -> Unit) {
-    IconButton(
-        onClick = onClick,
-        modifier = Modifier
-            .size(48.dp)
-            .background(Color(255,255,255), shape = CircleShape)
-            .border(1.dp, Color.LightGray, shape = CircleShape),
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.arrow_back),
-            contentDescription = "Botão de voltar",
-            tint = Color.Black,
-        )
     }
 }
 

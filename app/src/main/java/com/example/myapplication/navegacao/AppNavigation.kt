@@ -57,9 +57,9 @@ fun NavagacaoEntreTela() {
         }
         //composable("perfil"){ telaInicio() }
         composable(Rotas.CARRINHO){ TelaCarrinho() }
-        composable(Rotas.PAGAMENTO){ TelaPagamento() }
+        composable(Rotas.PAGAMENTO){ TelaPagamento(onVoltar = {navInterno.popBackStack()}) }
         composable(Rotas.ENTREGA){ TelaEntrega() }
-        composable(Rotas.RASTREIO){ TelaRastreio() }
+        composable(Rotas.RASTREIO){ TelaRastreio(onVoltar = {navInterno.popBackStack()}) }
         composable(Rotas.CATEGORIAS) {
             TelaListaCategorias(
                 viewModel,

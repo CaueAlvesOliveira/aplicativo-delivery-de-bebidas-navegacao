@@ -1,11 +1,7 @@
 package com.example.myapplication.ui.screens
 
-import android.icu.text.ListFormatter
-import android.text.style.BackgroundColorSpan
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,8 +33,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
-import kotlin.random.Random
+import com.example.myapplication.viewmodel.LojaViewModel
 
 
 @Composable
@@ -60,7 +57,7 @@ fun TelaPagamento(){
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CardsModeloPagamento()
-                CardResumo(1,1f,0f,1f,)
+                CardResumo()
                 Spacer(modifier = Modifier.padding(0.dp, 70.dp))
                 BotaoConfirmarPagamento()
             }
@@ -134,9 +131,14 @@ fun CardsModeloPagamento() {
 }
 
 @Composable
-fun CardResumo(quantidadeItens: Int, valorTotalProdutos: Float, valorEntrega: Float, valorTotal: Float){
+fun CardResumo(viewModel: LojaViewModel = viewModel()){
 
     var itemSelecionado by remember { mutableStateOf(0) }
+
+    val quantidadeItens = viewModel.calculaQuantidadeItensComprados()
+    val valorTotalProdutos = viewModel.calculaValorTotalItensComprados()
+    val valorEntrega = viewModel.calculaValorDaEntrega()
+    val valorTotal = viewModel.calculaValorTotal()
 
     Spacer(modifier = Modifier.width(25.dp))
     Column(
@@ -175,7 +177,7 @@ fun CardResumo(quantidadeItens: Int, valorTotalProdutos: Float, valorEntrega: Fl
                     ) {
                         Text(text = "$quantidadeItens itens")
                         Spacer(modifier = Modifier.width(215.dp))
-                        Text("R$ $valorTotalProdutos")
+                        Text("R$ %.2f".format(valorTotalProdutos))
                     }
 
                     Row(
@@ -183,7 +185,7 @@ fun CardResumo(quantidadeItens: Int, valorTotalProdutos: Float, valorEntrega: Fl
                     ) {
                         Text(text = "Entrega expressa")
                         Spacer(modifier = Modifier.width(150.dp))
-                        Text("R$ $valorEntrega")
+                        Text("R$ %.2f".format(valorEntrega))
                     }
 
                     Row(
@@ -195,7 +197,7 @@ fun CardResumo(quantidadeItens: Int, valorTotalProdutos: Float, valorEntrega: Fl
                             fontSize = 16.sp
                         )
                         Spacer(modifier = Modifier.width(220.dp))
-                        Text("R$ $valorTotal")
+                        Text("R$ %.2f".format(valorTotal))
                     }
                 }
 

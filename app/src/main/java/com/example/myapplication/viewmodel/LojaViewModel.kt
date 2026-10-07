@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.example.myapplication.R
 import com.example.myapplication.model.Categoria
+import com.example.myapplication.model.ItensComprados
 import com.example.myapplication.model.Produto
 
 class LojaViewModel : ViewModel() {
@@ -12,6 +13,8 @@ class LojaViewModel : ViewModel() {
     val produtos = mutableStateListOf<Produto>()
 
     val categorias = mutableStateListOf<Categoria>()
+
+    val itensComprados = mutableStateListOf<ItensComprados>()
 
     init {
 
@@ -26,6 +29,9 @@ class LojaViewModel : ViewModel() {
         val destilada = idDaCategoria("Destilada")
         val gelo = idDaCategoria("Gelo")
         val refrigerante = idDaCategoria("Refrigerante")
+
+        itensComprados.add(ItensComprados(2, 10.0))
+        itensComprados.add(ItensComprados(1, 5.0))
 
         adicionarProduto("Puro Malte", "350ml", 4.90, R.drawable.puro_malte, cerveja)
         adicionarProduto("Vinho Tinto", "750ml", 32.90, R.drawable.vinho, vinho)
@@ -106,5 +112,31 @@ class LojaViewModel : ViewModel() {
 
     private fun idDaCategoria(nome: String): Int {
         return categorias.first { it.nome == nome }.id
+    }
+
+    fun calculaQuantidadeItensComprados(): Int {
+        var quantidade = 0
+        itensComprados.forEach {
+            quantidade += it.quantidadeItens
+        }
+        return quantidade
+    }
+
+    fun calculaValorTotalItensComprados(): Double {
+        var valorTotal = 0.0
+        itensComprados.forEach {
+            valorTotal += it.quantidadeItens * it.valorTotal
+        }
+        return valorTotal
+    }
+
+    fun calculaValorDaEntrega(): Double {
+        val valorEntrega = 10.99
+        return valorEntrega
+    }
+
+    fun calculaValorTotal(): Double {
+        val valorTotal = calculaValorTotalItensComprados() + calculaValorDaEntrega()
+        return valorTotal
     }
 }

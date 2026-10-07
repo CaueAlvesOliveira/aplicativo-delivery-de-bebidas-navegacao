@@ -1,6 +1,8 @@
 package com.example.myapplication.ui.screens
 
 import android.icu.text.ListFormatter
+import android.text.style.BackgroundColorSpan
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -13,7 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -41,23 +46,26 @@ import kotlin.random.Random
 fun TelaPagamento(){
 
     Scaffold(){ innerPadding ->
-        Column(
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            Row(
 
+        Column( modifier = Modifier.padding(innerPadding)) {
+            Row(
+                modifier = Modifier.padding(16.dp, 15.dp, 10.dp, 0.dp)
             ) {
                 BotaoVoltar()
                 TextoTitulo()
             }
 
-            CardsModeloPagamento()
-            CardResumo(1,1f,0f,1f,)
-            BotaoConfirmarPagamento()
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CardsModeloPagamento()
+                CardResumo(1,1f,0f,1f,)
+                Spacer(modifier = Modifier.padding(0.dp, 70.dp))
+                BotaoConfirmarPagamento()
+            }
         }
     }
-
-
 }
 
 @Composable
@@ -71,7 +79,6 @@ fun TextoTitulo(){
 }
 
 @Composable
-@Preview(showBackground = true)
 fun CardsModeloPagamento() {
 
     var itemSelecionado by remember { mutableStateOf(0) }
@@ -93,7 +100,7 @@ fun CardsModeloPagamento() {
                     .padding(vertical = 6.dp)
                     .border(
                         width = if (itemSelecionado == index) 2.dp else 1.dp,
-                        color = if (itemSelecionado == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+                        color = if (itemSelecionado == index) Color.Green else Color.Gray,
                         shape = RoundedCornerShape(12.dp)
                     )
                     .clickable { itemSelecionado = index },
@@ -110,7 +117,7 @@ fun CardsModeloPagamento() {
                         painter = painterResource(id = icone),
                         contentDescription = nome,
                         modifier = Modifier.size(24.dp),
-                        tint = if (itemSelecionado == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                        tint = if (itemSelecionado == index) Color.Green else Color.Gray
                     )
 
                     Spacer(modifier = Modifier.width(16.dp))
@@ -201,24 +208,33 @@ fun CardResumo(quantidadeItens: Int, valorTotalProdutos: Float, valorEntrega: Fl
 fun BotaoConfirmarPagamento(){
 
     Column(
-        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.padding(16.dp, 15.dp),
+        verticalArrangement = Arrangement.spacedBy(15.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = {}
+            onClick = {},
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(255, 112, 67, 255)
+            ),
+            modifier = Modifier.size(300.dp, 50.dp)
         ) {
-            Text("Confirmar Pedido")
+            Text(
+                fontSize = 17.sp,
+                text = "Confirmar Pedido"
+            )
         }
 
-
-        Row() {
-            Spacer(modifier = Modifier.width(10.dp))
-            //Icon(imageVector = Icons.Default.Lock, "cadeado")
-            Text("Pagamento Seguro")
+        Row(
+            modifier = Modifier.padding(start = 4.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(imageVector = Icons.Default.Lock, "cadeado", modifier = Modifier.size(15.dp))
+            Text(
+                fontSize = 15.sp,
+                text = "Pagamento Seguro"
+            )
         }
-
-
     }
-
-
 }

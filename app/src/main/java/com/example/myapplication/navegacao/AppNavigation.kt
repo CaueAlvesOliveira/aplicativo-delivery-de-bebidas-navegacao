@@ -9,6 +9,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.navegacao.rotas.Rotas
 import com.example.myapplication.ui.screens.TelaCarrinho
 import com.example.myapplication.ui.screens.TelaEntrega
+import com.example.myapplication.ui.screens.TelaFormCategoria
+import com.example.myapplication.ui.screens.TelaFormProduto
+import com.example.myapplication.ui.screens.TelaListaCategorias
+import com.example.myapplication.ui.screens.TelaListaProdutos
 import com.example.myapplication.ui.screens.TelaPagamento
 import com.example.myapplication.ui.screens.TelaProduto
 import com.example.myapplication.ui.screens.TelaProdutoPorCategoria
@@ -34,13 +38,45 @@ fun NavagacaoEntreTela() {
                 id,
                 viewModel,
                 onVoltar = {navInterno.popBackStack()},
-                irParaCarrinho = {navInterno.navigate(Rotas.CARRINHO)})
+                irParaCarrinho = {navInterno.navigate(Rotas.CARRINHO)}
+            )
+        }
+        composable(Rotas.PRODUTOS){
+            TelaListaProdutos(
+                viewModel,
+                onVoltar = {navInterno.popBackStack()},
+                onNovo = {navInterno.navigate(Rotas.formProduto())},
+                onEditar = {id -> navInterno.navigate(Rotas.formProduto(id))})
+        }
+        composable(Rotas.FORM_PRODUTO){backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: -1
+            TelaFormProduto(
+                id,
+                viewModel,
+                onVoltar = {navInterno.popBackStack()})
         }
         //composable("perfil"){ telaInicio() }
         composable(Rotas.CARRINHO){ TelaCarrinho() }
         composable(Rotas.PAGAMENTO){ TelaPagamento() }
         composable(Rotas.ENTREGA){ TelaEntrega() }
         composable(Rotas.RASTREIO){ TelaRastreio() }
-        composable(Rotas.PRODUTOS_POR_CATEGORIA){ TelaProdutoPorCategoria() }
+        composable(Rotas.CATEGORIAS) {
+            TelaListaCategorias(
+                viewModel,
+                onVoltar = { navInterno.popBackStack() },
+                onNovo = { navInterno.navigate(Rotas.formCategoria()) },
+                onEditar = { id -> navInterno.navigate(Rotas.formCategoria(id)) },
+                onAbrir = { id -> navInterno.navigate(Rotas.produtosPorCategoria(id)) }
+            )
+        }
+        composable(Rotas.FORM_CATEGORIA) { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: -1
+            TelaFormCategoria(
+                id,
+                viewModel,
+                onVoltar = { navInterno.popBackStack() }
+            )
+        }
+        composable(Rotas.PRODUTOS_POR_CATEGORIA) {navInterno.navigate(Rotas.PRODUTOS_POR_CATEGORIA)}
     }
 }

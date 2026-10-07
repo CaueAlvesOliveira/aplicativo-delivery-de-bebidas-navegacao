@@ -74,10 +74,26 @@ class LojaViewModel : ViewModel() {
         produtos.removeAll { it.id == id }
     }
 
-    fun editarProduto(id: Int, nome: String, volume: String, preco: Double, imagem: Int, categoriaId: Int) {
+    fun editarProduto(
+        id: Int,
+        nome: String,
+        volume: String,
+        estabelecimento: String,
+        preco: Double,
+        imagem: Int,
+        desconto: String?,
+        descricao: String,
+        categoriaId: Int) {
         val i = produtos.indexOfFirst { it.id == id }
         if (i != -1) produtos[i] = produtos[i].copy(
-            nome = nome, volume = volume, preco = preco, imagem = imagem, categoriaId = categoriaId
+            nome = nome,
+            volume = volume,
+            estabelecimento = estabelecimento,
+            preco = preco,
+            imagem = imagem,
+            desconto = desconto,
+            descricao = descricao,
+            categoriaId = categoriaId
         )
     }
 

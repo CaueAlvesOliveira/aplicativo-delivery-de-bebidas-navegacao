@@ -75,7 +75,7 @@ fun TelaInicioPreview() {
 fun telaInicio(navController: NavController, viewModel: LojaViewModel) {
     Scaffold(
         bottomBar = {
-            BarraDeNavegacaoInferior()
+            BarraDeNavegacaoInferior(onProdutos = { navController.navigate(Rotas.PRODUTOS) })
         },
         contentColor = Color.Black
     ) {innerPadding ->
@@ -109,7 +109,11 @@ fun telaInicio(navController: NavController, viewModel: LojaViewModel) {
 
                 Spacer(Modifier.height(16.dp))
 
-                ListaCategorias(viewModel.categorias)
+                ListaCategorias(
+                    categorias = viewModel.categorias,
+                    onCategoriaClick = { id -> navController.navigate(Rotas.produtosPorCategoria(id)) },
+                    onGerenciar = { navController.navigate(Rotas.CATEGORIAS) }
+                )
 
                 Spacer(Modifier.height(20.dp))
 
@@ -218,16 +222,48 @@ fun BarraPesquisa() {
 }
 
 @Composable
-fun ListaCategorias(categorias: List<Categoria>) {
-    LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-        items(categorias) {categoria ->
-            ItemCategoria(categoria)
+fun ListaCategorias(
+    categorias: List<Categoria>,
+    onCategoriaClick: (Int) -> Unit,
+    onGerenciar: () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Categorias",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "Gerenciar",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFFFF7043),
+                modifier = Modifier
+                    .clickable { onGerenciar() }
+                    .padding(4.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            items(categorias, key = { it.id }) { categoria ->
+                ItemCategoria(
+                    categoria,
+                    onClick = { onCategoriaClick(categoria.id) }
+                )
+            }
         }
     }
 }
 
 @Composable
-fun ItemCategoria(categoria: Categoria) {
+fun ItemCategoria(categoria: Categoria, onClick: () -> Unit = {}) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.width(70.dp)
@@ -246,7 +282,7 @@ fun ItemCategoria(categoria: Categoria) {
                 }
         ) {
             IconButton(
-                onClick = {},
+                onClick = {onClick()},
                 modifier = Modifier
                     .size(48.dp)
                     .background(Color(255,255,255), shape = CircleShape)
@@ -259,7 +295,7 @@ fun ItemCategoria(categoria: Categoria) {
                 )
             }
         }
-        
+
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
@@ -320,7 +356,7 @@ fun ListaMaisPedidos(
     produtos: List<Produto>,
     onProdutoClick: (Int) -> Unit,
     onAdicionar: (Int) -> Unit
-    ) {
+) {
     Column {
         Text(
             text = "Mais pedidos por aqui",
@@ -519,14 +555,15 @@ fun CardProdutoOferta(
 }
 
 @Composable
-fun BarraDeNavegacaoInferior() {
+fun BarraDeNavegacaoInferior(onProdutos: () -> Unit = {}) {
     var itemSelecionado by remember { mutableIntStateOf(0) }
 
     val itens = listOf<Triple<String, Int, Int>>(
         Triple("Início", R.drawable.home_24, 0),
         Triple("Buscar", R.drawable.search_24, 1),
         Triple("Pedidos", R.drawable.list_24, 2),
-        Triple("Perfil", R.drawable.person_24dp_e3e3e3_fill0_wght400_grad0_opsz24, 3)
+        Triple("Produtos", R.drawable.liquor_24, 3),
+        Triple("Perfil", R.drawable.person_24dp_e3e3e3_fill0_wght400_grad0_opsz24, 4)
     )
 
     NavigationBar (
@@ -535,7 +572,10 @@ fun BarraDeNavegacaoInferior() {
         itens.forEach { (nome, icone, index) ->
             NavigationBarItem(
                 selected = itemSelecionado == index,
-                onClick = { itemSelecionado = index },
+                onClick = {
+                    itemSelecionado = index
+                    if (nome == "Produtos") onProdutos()
+                },
                 icon = {
                     Icon(painter = painterResource(id = icone), contentDescription = nome)
                 },

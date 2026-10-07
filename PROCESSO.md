@@ -28,3 +28,13 @@ Em seguida mudamos o appNavigation para criar o navController e ViewModel que se
 Em seguida criamos a navegação dos cards dos produtos, agora quando clicamos em card somos direcionados a tela de detalhes do produto com informações específicas dele. Abaixo segue o vídeo demonstrando essa parte:
 
 [![video das cards](https://drive.google.com/file/d/1lYTXZ0beDkiBo1q8j-sM-e2JDRqZAnHU/view?usp=sharing)](https://drive.google.com/file/d/1lYTXZ0beDkiBo1q8j-sM-e2JDRqZAnHU/view?usp=sharing)
+
+Para cumprir com os requisitos do trabalho foi necessário criar duas telas que mostram os produtos e categorias utilizando LazyColumns e que permitem a alteração dos objetos com os métodos do CRUD em ViewModel. Nessas telas podemos adicionar, editar e excluir os elementos das listas, para isso existe uma segunda tela de formulário, que já vem completa com as informações se a escolha for editar um item que já existe ou então em branco para adicionar novo item.
+
+![print lista dos produtos](anexos/processo/prints/TelaListaProdutos.png)
+
+![print editar produtos](anexos/processo/prints/EditarProduto.png)
+
+![print lista de categorias](anexos/processo/prints/TelaListaCategorias.png)
+
+![print adicionar categoria](anexos/processo/prints/AdicionarCategoria.png)

@@ -159,7 +159,7 @@ private fun CardCategoriaLista(
                     .background(categoria.cor.copy(alpha = 0.15f), shape = CircleShape)
             ) {
                 Icon(
-                    painter = painterResource(id = categoria.icone),
+                    imageVector = categoria.icone,
                     contentDescription = "Ícone da categoria ${categoria.nome}",
                     tint = categoria.cor,
                     modifier = Modifier.size(24.dp)

@@ -1,7 +1,14 @@
 package com.example.myapplication.viewmodel
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AcUnit
+import androidx.compose.material.icons.outlined.Liquor
+import androidx.compose.material.icons.outlined.LocalDrink
+import androidx.compose.material.icons.outlined.SportsBar
+import androidx.compose.material.icons.outlined.WineBar
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import com.example.myapplication.R
 import com.example.myapplication.model.Categoria
@@ -18,11 +25,11 @@ class LojaViewModel : ViewModel() {
 
     init {
 
-        adicionarCategoria("Cerveja", R.drawable.sports_bar_24dp_e3e3e3_fill0_wght400_grad0_opsz24, Color(0xFF29B6F6))
-        adicionarCategoria("Vinho", R.drawable.wine_bar_24, Color(0xFF7E57C2))
-        adicionarCategoria("Destilada", R.drawable.liquor_24, Color(0xFFFF7043))
-        adicionarCategoria("Gelo", R.drawable.ice_24, Color(0xFF66BB6A))
-        adicionarCategoria("Refrigerante", R.drawable.water_full_24dp_e3e3e3_fill0_wght400_grad0_opsz24, Color(0xFF8D6E63))
+        adicionarCategoria("Cerveja", Icons.Outlined.SportsBar, Color(0xFF29B6F6))
+        adicionarCategoria("Vinho", Icons.Outlined.WineBar, Color(0xFF7E57C2))
+        adicionarCategoria("Destilada", Icons.Outlined.Liquor, Color(0xFFFF7043))
+        adicionarCategoria("Gelo", Icons.Outlined.AcUnit, Color(0xFF66BB6A))
+        adicionarCategoria("Refrigerante", Icons.Outlined.LocalDrink, Color(0xFF8D6E63))
 
         val cerveja = idDaCategoria("Cerveja")
         val vinho = idDaCategoria("Vinho")
@@ -104,7 +111,7 @@ class LojaViewModel : ViewModel() {
         return produtos.find { it.id == id }
     }
 
-    fun adicionarCategoria(nome: String, icone: Int, cor: Color) {
+    fun adicionarCategoria(nome: String, icone: ImageVector, cor: Color) {
         categorias.add(Categoria(gerarIdDaCategoria(), nome, icone, cor))
     }
 
@@ -113,7 +120,7 @@ class LojaViewModel : ViewModel() {
         produtos.removeAll { it.categoriaId == id }
     }
 
-    fun editarCategoria(id: Int, nome: String, icone: Int, cor: Color) {
+    fun editarCategoria(id: Int, nome: String, icone: ImageVector, cor: Color) {
         val i = categorias.indexOfFirst { it.id == id }
         if (i != -1) categorias[i] = categorias[i].copy(
             nome = nome, icone = icone, cor = cor

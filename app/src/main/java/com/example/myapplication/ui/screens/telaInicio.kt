@@ -152,7 +152,6 @@ fun telaInicio(navController: NavController, viewModel: LojaViewModel) {
                         viewModel.adicionarAoCarrinho(id)
                         Toast.makeText(contexto, "Produto adicionado ao carrinho", Toast.LENGTH_SHORT).show()
                     }
-
                 )
             }
         }
@@ -172,7 +171,7 @@ fun EnderecoComponente() {
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        Column(modifier = Modifier.clickable{}) {
+        Column() {
 
             Text(
                 text = "ENTREGAR EM",
@@ -587,7 +586,6 @@ fun BarraDeNavegacaoInferior(
         ItemBarra("Carrinho", Icons.Outlined.ShoppingCart, onCarrinho),
         ItemBarra("Pedidos", Icons.AutoMirrored.Filled.List, onPedidos),
         ItemBarra("Produtos", Icons.Outlined.Liquor, onProdutos),
-        ItemBarra("Perfil", Icons.Outlined.Person)
     )
 
     NavigationBar(

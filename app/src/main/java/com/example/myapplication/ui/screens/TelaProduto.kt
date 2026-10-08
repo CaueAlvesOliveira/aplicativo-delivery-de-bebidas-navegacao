@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -146,7 +147,7 @@ fun BotaoFavorito() {
             .border(1.dp, Color.LightGray, shape = CircleShape),
     ) {
         Icon(
-            imageVector = if (favoritado) Icons.Filled.Favorite else Icons.Outlined.Favorite,
+            imageVector = if (favoritado) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
             contentDescription = "Favoritar produto",
             tint = Color(0xFFE53935),
         )

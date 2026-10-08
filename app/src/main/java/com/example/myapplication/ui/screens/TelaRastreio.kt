@@ -313,7 +313,6 @@ fun CardEntregador() {
         BotaoIconeCircular(
             Icons.Default.Call,
             "Ligar para o entregador",
-            onClick = {}
         )
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -321,20 +320,18 @@ fun CardEntregador() {
         BotaoIconeCircular(
             Icons.AutoMirrored.Filled.Chat,
             "Enviar mensagem para o entregador",
-            onClick = {}
         )
     }
 }
 
 @Composable
-fun BotaoIconeCircular(icone: ImageVector, descricao: String, onClick: () -> Unit) {
+fun BotaoIconeCircular(icone: ImageVector, descricao: String) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .size(40.dp)
             .clip(CircleShape)
             .background(Color(0xFFF0F0F0))
-            .clickable(onClick = onClick)
     ) {
         Icon(
             imageVector = icone,

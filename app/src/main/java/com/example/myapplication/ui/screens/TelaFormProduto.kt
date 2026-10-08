@@ -20,16 +20,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -45,10 +40,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
+import com.example.myapplication.model.DadosFormProduto
 import com.example.myapplication.ui.components.BarraDeNavegacaoInferior
 import com.example.myapplication.ui.components.TopBarTela
 import com.example.myapplication.viewmodel.LojaViewModel
-import java.util.Locale
 
 private val IMAGENS_DISPONIVEIS = listOf(
     R.drawable.puro_malte,
@@ -79,9 +74,7 @@ fun TelaFormProduto(
     var volume by rememberSaveable { mutableStateOf(existente?.volume ?: "") }
     var estabelecimento by rememberSaveable { mutableStateOf(existente?.estabelecimento ?: "") }
     var precoTexto by rememberSaveable {
-        mutableStateOf(
-            existente?.let { String.format(Locale.forLanguageTag("pt-BR"), "%.2f", it.preco) } ?: ""
-        )
+        mutableStateOf(existente?.let { viewModel.textoDoPreco(it.preco) } ?: "")
     }
     var descontoTexto by rememberSaveable { mutableStateOf(existente?.desconto ?: "") }
     var descricao by rememberSaveable { mutableStateOf(existente?.descricao ?: "") }
@@ -91,35 +84,23 @@ fun TelaFormProduto(
     }
     var tentouSalvar by rememberSaveable { mutableStateOf(false) }
 
-    val preco = precoTexto.replace(',', '.').toDoubleOrNull()
-    val erroNome = nome.isBlank()
-    val erroEstabelecimento = estabelecimento.isBlank()
-    val erroPreco = preco == null || preco <= 0.0
-    val formularioValido = !erroNome && !erroEstabelecimento && !erroPreco && categoriaId != -1
+    val dados = DadosFormProduto(
+        nome = nome,
+        volume = volume,
+        estabelecimento = estabelecimento,
+        precoTexto = precoTexto,
+        descontoTexto = descontoTexto,
+        descricao = descricao,
+        imagem = imagem,
+        categoriaId = categoriaId
+    )
+    val erros = viewModel.validarProduto(dados)
 
     fun salvar() {
         tentouSalvar = true
-        if (!formularioValido || preco == null) return
-
-        val desconto = descontoTexto.ifBlank { null }
-
-        if (existente != null) {
-            viewModel.editarProduto(
-                existente.id, nome.trim(), volume.trim(), estabelecimento.trim(),
-                preco, imagem, desconto, descricao.trim(), categoriaId
-            )
-        } else if (desconto != null) {
-            viewModel.adicionarProduto(
-                nome.trim(), volume.trim(), estabelecimento.trim(),
-                preco, imagem, desconto, descricao.trim(), categoriaId
-            )
-        } else {
-            viewModel.adicionarProduto(
-                nome.trim(), volume.trim(), estabelecimento.trim(),
-                preco, imagem, descricao.trim(), categoriaId
-            )
+        if (viewModel.salvarProduto(existente?.id, dados)) {
+            onVoltar()
         }
-        onVoltar()
     }
 
     Scaffold(
@@ -148,7 +129,7 @@ fun TelaFormProduto(
                 valor = nome,
                 onChange = { nome = it },
                 rotulo = "Nome",
-                erro = if (tentouSalvar && erroNome) "Informe o nome" else null
+                erro = if (tentouSalvar) erros.nome else null
             )
 
             CampoTexto(
@@ -161,7 +142,7 @@ fun TelaFormProduto(
                 valor = estabelecimento,
                 onChange = { estabelecimento = it },
                 rotulo = "Estabelecimento",
-                erro = if (tentouSalvar && erroEstabelecimento) "Informe o estabelecimento" else null
+                erro = if (tentouSalvar) erros.estabelecimento else null
             )
 
             CampoTexto(
@@ -169,12 +150,12 @@ fun TelaFormProduto(
                 onChange = { precoTexto = it },
                 rotulo = "Preço (R$)",
                 teclado = KeyboardType.Decimal,
-                erro = if (tentouSalvar && erroPreco) "Informe um preço maior que zero" else null
+                erro = if (tentouSalvar) erros.preco else null
             )
 
             CampoTexto(
                 valor = descontoTexto,
-                onChange = { descontoTexto = it.filter { c -> c.isDigit() }.take(2) },
+                onChange = { descontoTexto = viewModel.filtrarDesconto(it) },
                 rotulo = "Desconto em % (opcional)",
                 teclado = KeyboardType.Number
             )
@@ -195,6 +176,9 @@ fun TelaFormProduto(
                         label = { Text(categoria.nome) }
                     )
                 }
+            }
+            if (tentouSalvar && erros.categoria != null) {
+                Text(erros.categoria, color = Color(0xFFE53935), fontSize = 12.sp)
             }
 
             Text("Imagem", fontWeight = FontWeight.Bold, fontSize = 15.sp)

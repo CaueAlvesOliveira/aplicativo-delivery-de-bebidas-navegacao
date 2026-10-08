@@ -63,6 +63,8 @@ As telas dos formulários estavam concentrando muitas responsabilidades, então 
 
 ![print da lógica na viewmodel](anexos/processo/prints/validacao_no_viewmodel.png)
 
+[![video mostrando os formularios](https://drive.google.com/file/d/18aj7Y3EsIsDey8UpP8DjGGeF3qwFQbK3/view?usp=sharing)](https://drive.google.com/file/d/18aj7Y3EsIsDey8UpP8DjGGeF3qwFQbK3/view?usp=sharing)
+
 Algumas questões dessa decisão:
 
 * Um formulário só para criar e editar. A rota recebe um id: com -1 o formulário abre em branco (novo item), com qualquer outro valor ele busca o item no ViewModel e já vem preenchido. Isso evitou duplicar as telas.

@@ -17,6 +17,9 @@ import com.example.myapplication.model.Produto
 
 class LojaViewModel : ViewModel() {
 
+    private var proximoIdProduto = 1
+    private var proximoIdCategoria = 1
+
     val produtos = mutableStateListOf<Produto>()
 
     val categorias = mutableStateListOf<Categoria>()
@@ -34,7 +37,6 @@ class LojaViewModel : ViewModel() {
         val cerveja = idDaCategoria("Cerveja")
         val vinho = idDaCategoria("Vinho")
         val destilada = idDaCategoria("Destilada")
-        val gelo = idDaCategoria("Gelo")
         val refrigerante = idDaCategoria("Refrigerante")
 
         adicionarProduto("Puro Malte", "350ml", "Cervejaria Noturna", 4.90, R.drawable.puro_malte, "Lager leve e refrescante, com final seco e pouco amargor. Ideal pra abrir a noite.",cerveja)
@@ -81,7 +83,8 @@ class LojaViewModel : ViewModel() {
     }
 
     fun removerProduto(id: Int) {
-        produtos.removeAll { it.id == id }
+        produtos.removeAll{it.id == id}
+        carrinho.removeAll{it.produtoId == id}
     }
 
     fun editarProduto(
@@ -116,8 +119,12 @@ class LojaViewModel : ViewModel() {
     }
 
     fun removerCategoria(id: Int) {
-        categorias.removeAll { it.id == id }
-        produtos.removeAll { it.categoriaId == id }
+
+        val idsRemovidos = produtos.filter{it.categoriaId == id}.map{it.id}.toSet()
+
+        categorias.removeAll{it.id == id}
+        produtos.removeAll{it.categoriaId == id}
+        carrinho.removeAll{it.produtoId in idsRemovidos}
     }
 
     fun editarCategoria(id: Int, nome: String, icone: ImageVector, cor: Color) {
@@ -160,21 +167,15 @@ class LojaViewModel : ViewModel() {
     }
 
     private fun gerarIdDoProduto(): Int {
-        if (produtos.isEmpty()) {
-            return 1
-        }
-        return produtos.last().id + 1
+        return proximoIdProduto++
     }
 
     private fun gerarIdDaCategoria(): Int {
-        if (categorias.isEmpty()) {
-            return 1
-        }
-        return categorias.last().id + 1
+        return proximoIdCategoria++
     }
 
     private fun idDaCategoria(nome: String): Int {
-        return categorias.first { it.nome == nome }.id
+        return categorias.first{it.nome == nome}.id
     }
 
     fun calculaQuantidadeItensComprados(): Int {

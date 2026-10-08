@@ -44,3 +44,8 @@ Para cumprir com os requisitos do trabalho foi necessário criar duas telas que 
 Na primeira parte do trabalho o cabeçalho para voltar a tela era apenas um icone que não funciona, nessa segunda parte decidimos criar um componente reutilizável para todas as telas que vão ter um cabeçalho com botão de voltar.
 
 ![print do componente do cabeçalho](anexos/processo/prints/Cabecalho.png)
+
+# Formularios
+
+As telas dos formulários estavam concentrando muitas responsabilidades, então decidimos manter a parte da lógica de validação no viewModel e na tela apenas a IU.
+

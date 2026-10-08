@@ -57,7 +57,8 @@ fun NavagacaoEntreTela() {
                 onInicio = navInicio,
                 onCarrinho = navCarrinho,
                 onPedidos = navPedidos,
-                onProdutos = navProdutos
+                onProdutos = navProdutos,
+                onAbrir = {id -> navInterno.navigate(Rotas.produto(id))},
             )
         }
         composable(Rotas.FORM_PRODUTO){backStackEntry ->

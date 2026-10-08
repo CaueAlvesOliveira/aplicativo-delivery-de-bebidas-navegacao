@@ -97,7 +97,6 @@ A **barra inferior** (`NavigationBar`) leva a **Início, Carrinho, Pedidos (Rast
 | **Adicionar** pela UI (`OutlinedTextField` + `Button`) | `TelaFormProduto` e `TelaFormCategoria` |
 | **Remover** / editar pela UI | ícones de lixeira e lápis em cada `Card`, com `AlertDialog` de confirmação |
 | Clicar no item abre **Detalhes** com o item certo | `produto/{id}` e `produtosPorCategoria/{id}`: o `id` vai na rota e a tela busca o item no `ViewModel` |
-| Detalhes com algo **a mais** que o exemplo de aula | ver [seção 4 da documentação](#4-qual-foi-a-complexidade-extra-na-tela-de-detalhes) |
 
 ---
 

@@ -13,7 +13,7 @@ Além disso foram criadas telas para mostrar os produtos e categorias em colunas
 * Tela formulario produtos
 * Tela formulario categorias
 
-   ![print do Rotas.kt](anexos/processo/prints/Captura%20de%20tela%202026-10-01%20233318.png)
+![rotas.png](anexos/processo/prints/rotas.png)
 
 A tela de perfil não estava no esboço original da aplicação e por isso fica comentado por enquanto, no futuro pode ser adicionado como uma tela independente. Além disso, os arquivos das telas no diretório 'screens' foram criados, porém apenas a tela de pagamento teve seu desenvolvimento iniciado e não está completa.
 
@@ -100,6 +100,8 @@ Ao tocar numa categoria (no carrossel da tela inicial ou na lista de categorias)
 
 Escolhemos essa complexidade porque ela conecta as duas listas de modo que o usuário já sabe o que quer, então um toque na categoria já mostra as opções.
 
+O diferencial desta tela é listar os produtos por categoria especifica, como Cerveja, Vinho, Destilado, etc, assim, fazendo a filtragem dos produtos mostrados
+
 ![print da tela de produtos por categoria](anexos/processo/prints/produtosPorCategoria.png)
 
 # Tela do Carrinho
@@ -119,6 +121,8 @@ A tela de pagamento lê os mesmos dados do carrinho no ViewModel: quantidade de 
 # Tela de Rastreio (Entrega)
 
 Nesta versão, o conteúdo dessa tela é fixo devido a falta de tempo, não conseguimos deixar essa tela dinâmica por enquanto mas vamos fazer isso no futuro.
+
+![rastreio.png](anexos/processo/prints/rastreio.png)
 
 # Dificuldades
 

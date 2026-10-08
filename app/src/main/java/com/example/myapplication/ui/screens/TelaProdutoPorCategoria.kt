@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.model.Produto
+import com.example.myapplication.ui.components.BarraDeNavegacaoInferior
 import com.example.myapplication.ui.components.TopBarTela
 import com.example.myapplication.viewmodel.LojaViewModel
 import java.util.Locale
@@ -49,7 +50,11 @@ fun TelaProdutoPorCategoria(
     categoriaId: Int,
     viewModel: LojaViewModel,
     onVoltar: () -> Unit,
-    onProdutoClick: (Int) -> Unit
+    onProdutoClick: (Int) -> Unit,
+    onInicio: () -> Unit = {},
+    onCarrinho: () -> Unit = {},
+    onPedidos: () -> Unit = {},
+    onProdutos: () -> Unit = {}
 ) {
     val categoria = viewModel.buscarCategoria(categoriaId)
 
@@ -62,6 +67,15 @@ fun TelaProdutoPorCategoria(
 
     Scaffold(
         topBar = { TopBarTela(categoria.nome, onVoltar) },
+        bottomBar = {
+            BarraDeNavegacaoInferior(
+                selectedIndex = 3,
+                onInicio = onInicio,
+                onCarrinho = onCarrinho,
+                onPedidos = onPedidos,
+                onProdutos = onProdutos
+            )
+        },
         containerColor = Color(0xFFECECEC),
         contentColor = Color.Black
     ) { innerPadding ->

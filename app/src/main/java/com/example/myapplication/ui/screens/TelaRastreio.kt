@@ -45,12 +45,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.model.EstadoEtapa
+import com.example.myapplication.ui.components.BarraDeNavegacaoInferior
 import com.example.myapplication.ui.components.TopBarTela
 
 @Composable
-fun TelaRastreio(onVoltar:() -> Unit) {
+fun TelaRastreio(
+    onVoltar: () -> Unit,
+    onInicio: () -> Unit = {},
+    onCarrinho: () -> Unit = {},
+    onPedidos: () -> Unit = {},
+    onProdutos: () -> Unit = {}
+) {
     Scaffold (
-        topBar = { TopBarTela("Pedido", onVoltar) }
+        topBar = { TopBarTela("Pedido", onVoltar) },
+        bottomBar = {
+            BarraDeNavegacaoInferior(
+                selectedIndex = 2,
+                onInicio = onInicio,
+                onCarrinho = onCarrinho,
+                onPedidos = onPedidos,
+                onProdutos = onProdutos
+            )
+        }
     ) { innerPadding ->
         Surface(
             modifier = Modifier

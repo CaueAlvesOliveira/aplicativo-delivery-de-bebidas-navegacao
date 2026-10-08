@@ -25,6 +25,11 @@ fun NavagacaoEntreTela() {
 
     val viewModel: LojaViewModel = viewModel()
 
+    val navInicio = { navInterno.navigate(Rotas.HOME) }
+    val navCarrinho = { navInterno.navigate(Rotas.CARRINHO) }
+    val navPedidos = { navInterno.navigate(Rotas.RASTREIO) }
+    val navProdutos = { navInterno.navigate(Rotas.PRODUTOS) }
+
     NavHost(
         navController = navInterno,
         startDestination = Rotas.HOME
@@ -33,59 +38,107 @@ fun NavagacaoEntreTela() {
         composable(Rotas.PRODUTO){backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: -1
             TelaProduto(
-                id,
-                viewModel,
+                produtoId = id,
+                viewModel = viewModel,
                 onVoltar = {navInterno.popBackStack()},
-                irParaCarrinho = {navInterno.navigate(Rotas.CARRINHO)}
+                irParaCarrinho = {navInterno.navigate(Rotas.CARRINHO)},
+                onInicio = navInicio,
+                onCarrinho = navCarrinho,
+                onPedidos = navPedidos,
+                onProdutos = navProdutos
             )
         }
         composable(Rotas.PRODUTOS){
             TelaListaProdutos(
-                viewModel,
+                viewModel = viewModel,
                 onVoltar = {navInterno.popBackStack()},
                 onNovo = {navInterno.navigate(Rotas.formProduto())},
-                onEditar = {id -> navInterno.navigate(Rotas.formProduto(id))})
+                onEditar = {id -> navInterno.navigate(Rotas.formProduto(id))},
+                onInicio = navInicio,
+                onCarrinho = navCarrinho,
+                onPedidos = navPedidos,
+                onProdutos = navProdutos
+            )
         }
         composable(Rotas.FORM_PRODUTO){backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: -1
             TelaFormProduto(
-                id,
-                viewModel,
-                onVoltar = {navInterno.popBackStack()})
+                produtoId = id,
+                viewModel = viewModel,
+                onVoltar = {navInterno.popBackStack()},
+                onInicio = navInicio,
+                onCarrinho = navCarrinho,
+                onPedidos = navPedidos,
+                onProdutos = navProdutos
+            )
         }
-        //composable("perfil"){ telaInicio() }
-        composable(Rotas.CARRINHO){ TelaCarrinho(
-            viewModel,
-            onVoltar = {navInterno.popBackStack()},
-            onIrParaPagamento = {navInterno.navigate(Rotas.PAGAMENTO)}
-        ) }
-        composable(Rotas.PAGAMENTO){ TelaPagamento(onVoltar = {navInterno.popBackStack()}, navInterno, viewModel) }
-        composable(Rotas.RASTREIO){ TelaRastreio(onVoltar = {navInterno.popBackStack()}) }
+        composable(Rotas.CARRINHO){
+            TelaCarrinho(
+                viewModel = viewModel,
+                onVoltar = {navInterno.popBackStack()},
+                onIrParaPagamento = {navInterno.navigate(Rotas.PAGAMENTO)},
+                onInicio = navInicio,
+                onCarrinho = navCarrinho,
+                onPedidos = navPedidos,
+                onProdutos = navProdutos
+            )
+        }
+        composable(Rotas.PAGAMENTO){
+            TelaPagamento(
+                onVoltar = {navInterno.popBackStack()},
+                navController = navInterno,
+                viewModel = viewModel,
+                onInicio = navInicio,
+                onCarrinho = navCarrinho,
+                onPedidos = navPedidos,
+                onProdutos = navProdutos
+            )
+        }
+        composable(Rotas.RASTREIO){
+            TelaRastreio(
+                onVoltar = {navInterno.popBackStack()},
+                onInicio = navInicio,
+                onCarrinho = navCarrinho,
+                onPedidos = navPedidos,
+                onProdutos = navProdutos
+            )
+        }
         composable(Rotas.CATEGORIAS) {
             TelaListaCategorias(
-                viewModel,
+                viewModel = viewModel,
                 onVoltar = { navInterno.popBackStack() },
                 onNovo = { navInterno.navigate(Rotas.formCategoria()) },
                 onEditar = { id -> navInterno.navigate(Rotas.formCategoria(id)) },
-                onAbrir = { id -> navInterno.navigate(Rotas.produtosPorCategoria(id)) }
+                onAbrir = { id -> navInterno.navigate(Rotas.produtosPorCategoria(id)) },
+                onInicio = navInicio,
+                onCarrinho = navCarrinho,
+                onPedidos = navPedidos,
+                onProdutos = navProdutos
             )
         }
         composable(Rotas.FORM_CATEGORIA) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: -1
             TelaFormCategoria(
-                id,
-                viewModel,
-                onVoltar = { navInterno.popBackStack() }
+                categoriaId = id,
+                viewModel = viewModel,
+                onVoltar = { navInterno.popBackStack() },
+                onInicio = navInicio,
+                onCarrinho = navCarrinho,
+                onPedidos = navPedidos,
+                onProdutos = navProdutos
             )
         }
-
         composable(Rotas.PRODUTOS_POR_CATEGORIA) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: -1
             TelaProdutoPorCategoria(
-                id,
-                viewModel,
+                categoriaId = id,
+                viewModel = viewModel,
                 onVoltar = { navInterno.popBackStack() },
-                onProdutoClick = { produtoId -> navInterno.navigate(Rotas.produto(produtoId)) }
+                onProdutoClick = { produtoId -> navInterno.navigate(Rotas.produto(produtoId)) },
+                onInicio = navInicio,
+                onCarrinho = navCarrinho,
+                onPedidos = navPedidos,
+                onProdutos = navProdutos
             )
         }
     }

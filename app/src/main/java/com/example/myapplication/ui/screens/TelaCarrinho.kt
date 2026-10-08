@@ -45,6 +45,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.model.Produto
+import com.example.myapplication.ui.components.BarraDeNavegacaoInferior
 import com.example.myapplication.ui.components.TopBarTela
 import com.example.myapplication.viewmodel.LojaViewModel
 import java.util.Locale
@@ -63,7 +64,11 @@ private data class LinhaCarrinho(val produto: Produto, val quantidade: Int)
 fun TelaCarrinho(
     viewModel: LojaViewModel,
     onVoltar: () -> Unit,
-    onIrParaPagamento: () -> Unit
+    onIrParaPagamento: () -> Unit,
+    onInicio: () -> Unit = {},
+    onCarrinho: () -> Unit = {},
+    onPedidos: () -> Unit = {},
+    onProdutos: () -> Unit = {}
 ) {
     val linhas = viewModel.carrinho.mapNotNull { item ->
         viewModel.buscarProduto(item.produtoId)?.let { LinhaCarrinho(it, item.quantidade) }
@@ -71,6 +76,15 @@ fun TelaCarrinho(
 
     Scaffold(
         topBar = { TopBarTela("Seu carrinho", onVoltar) },
+        bottomBar = {
+            BarraDeNavegacaoInferior(
+                selectedIndex = 1,
+                onInicio = onInicio,
+                onCarrinho = onCarrinho,
+                onPedidos = onPedidos,
+                onProdutos = onProdutos
+            )
+        },
         containerColor = CorFundo,
         contentColor = Color.Black
     ) { innerPadding ->

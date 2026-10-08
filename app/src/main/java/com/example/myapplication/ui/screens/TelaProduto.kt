@@ -52,6 +52,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.model.Produto
+import com.example.myapplication.ui.components.BarraDeNavegacaoInferior
 import com.example.myapplication.ui.components.BotaoVoltar
 import com.example.myapplication.viewmodel.LojaViewModel
 import java.util.Locale
@@ -61,7 +62,11 @@ fun TelaProduto(
     produtoId: Int,
     viewModel: LojaViewModel,
     onVoltar: () -> Unit,
-    irParaCarrinho: () -> Unit
+    irParaCarrinho: () -> Unit,
+    onInicio: () -> Unit = {},
+    onCarrinho: () -> Unit = {},
+    onPedidos: () -> Unit = {},
+    onProdutos: () -> Unit = {}
 ) {
     val produto = viewModel.buscarProduto(produtoId)
 
@@ -73,7 +78,17 @@ fun TelaProduto(
     var quantidade by rememberSaveable { mutableIntStateOf(1) }
     val contexto = LocalContext.current
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        bottomBar = {
+            BarraDeNavegacaoInferior(
+                selectedIndex = 3,
+                onInicio = onInicio,
+                onCarrinho = onCarrinho,
+                onPedidos = onPedidos,
+                onProdutos = onProdutos
+            )
+        }
+    ) { innerPadding ->
         Surface(
             modifier = Modifier.padding(innerPadding).fillMaxSize(),
             color = Color(0xFFECECEC),

@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.model.Categoria
+import com.example.myapplication.ui.components.BarraDeNavegacaoInferior
 import com.example.myapplication.ui.components.TopBarTela
 import com.example.myapplication.viewmodel.LojaViewModel
 
@@ -79,7 +80,11 @@ private val CORES_DISPONIVEIS = listOf(
 fun TelaFormCategoria(
     categoriaId: Int,
     viewModel: LojaViewModel,
-    onVoltar: () -> Unit
+    onVoltar: () -> Unit,
+    onInicio: () -> Unit = {},
+    onCarrinho: () -> Unit = {},
+    onPedidos: () -> Unit = {},
+    onProdutos: () -> Unit = {}
 ) {
     val existente = viewModel.buscarCategoria(categoriaId)
     val editando = existente != null
@@ -115,6 +120,15 @@ fun TelaFormCategoria(
 
     Scaffold(
         topBar = { TopBarTela(if (editando) "Editar categoria" else "Nova categoria", onVoltar) },
+        bottomBar = {
+            BarraDeNavegacaoInferior(
+                selectedIndex = 3,
+                onInicio = onInicio,
+                onCarrinho = onCarrinho,
+                onPedidos = onPedidos,
+                onProdutos = onProdutos
+            )
+        },
         containerColor = Color(0xFFECECEC),
         contentColor = Color.Black
     ) { innerPadding ->

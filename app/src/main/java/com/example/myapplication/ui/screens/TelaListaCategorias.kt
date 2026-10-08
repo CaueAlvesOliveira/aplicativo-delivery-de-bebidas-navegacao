@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.model.Categoria
+import com.example.myapplication.ui.components.BarraDeNavegacaoInferior
 import com.example.myapplication.ui.components.TopBarTela
 import com.example.myapplication.viewmodel.LojaViewModel
 
@@ -56,13 +57,26 @@ fun TelaListaCategorias(
     onVoltar: () -> Unit,
     onNovo: () -> Unit,
     onEditar: (Int) -> Unit,
-    onAbrir: (Int) -> Unit
+    onAbrir: (Int) -> Unit,
+    onInicio: () -> Unit = {},
+    onCarrinho: () -> Unit = {},
+    onPedidos: () -> Unit = {},
+    onProdutos: () -> Unit = {}
 ) {
 
     var categoriaParaExcluir by remember { mutableStateOf<Categoria?>(null) }
 
     Scaffold(
         topBar = { TopBarTela("Categorias", onVoltar) },
+        bottomBar = {
+            BarraDeNavegacaoInferior(
+                selectedIndex = 3,
+                onInicio = onInicio,
+                onCarrinho = onCarrinho,
+                onPedidos = onPedidos,
+                onProdutos = onProdutos
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onNovo,

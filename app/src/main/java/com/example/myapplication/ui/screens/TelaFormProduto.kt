@@ -45,6 +45,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
+import com.example.myapplication.ui.components.BarraDeNavegacaoInferior
 import com.example.myapplication.ui.components.TopBarTela
 import com.example.myapplication.viewmodel.LojaViewModel
 import java.util.Locale
@@ -65,7 +66,11 @@ private val IMAGENS_DISPONIVEIS = listOf(
 fun TelaFormProduto(
     produtoId: Int,
     viewModel: LojaViewModel,
-    onVoltar: () -> Unit
+    onVoltar: () -> Unit,
+    onInicio: () -> Unit = {},
+    onCarrinho: () -> Unit = {},
+    onPedidos: () -> Unit = {},
+    onProdutos: () -> Unit = {}
 ) {
     val existente = viewModel.buscarProduto(produtoId)
     val editando = existente != null
@@ -119,6 +124,15 @@ fun TelaFormProduto(
 
     Scaffold(
         topBar = { TopBarTela(if (editando) "Editar produto" else "Novo produto", onVoltar) },
+        bottomBar = {
+            BarraDeNavegacaoInferior(
+                selectedIndex = 3,
+                onInicio = onInicio,
+                onCarrinho = onCarrinho,
+                onPedidos = onPedidos,
+                onProdutos = onProdutos
+            )
+        },
         containerColor = Color(0xFFECECEC),
         contentColor = Color.Black
     ) { innerPadding ->

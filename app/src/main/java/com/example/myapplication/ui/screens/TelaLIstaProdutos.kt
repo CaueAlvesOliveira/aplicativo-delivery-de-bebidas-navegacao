@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.model.Produto
+import com.example.myapplication.ui.components.BarraDeNavegacaoInferior
 import com.example.myapplication.ui.components.TopBarTela
 import com.example.myapplication.viewmodel.LojaViewModel
 import java.util.Locale
@@ -54,13 +55,26 @@ fun TelaListaProdutos(
     viewModel: LojaViewModel,
     onVoltar: () -> Unit,
     onNovo: () -> Unit,
-    onEditar: (Int) -> Unit
+    onEditar: (Int) -> Unit,
+    onInicio: () -> Unit = {},
+    onCarrinho: () -> Unit = {},
+    onPedidos: () -> Unit = {},
+    onProdutos: () -> Unit = {}
 ) {
 
     var produtoParaExcluir by remember { mutableStateOf<Produto?>(null) }
 
     Scaffold(
         topBar = { TopBarTela("Produtos", onVoltar) },
+        bottomBar = {
+            BarraDeNavegacaoInferior(
+                selectedIndex = 3,
+                onInicio = onInicio,
+                onCarrinho = onCarrinho,
+                onPedidos = onPedidos,
+                onProdutos = onProdutos
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onNovo,

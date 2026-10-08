@@ -6,10 +6,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -36,11 +40,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapplication.navegacao.rotas.Rotas
+import com.example.myapplication.ui.components.BarraDeNavegacaoInferior
 import com.example.myapplication.ui.components.TopBarTela
 import com.example.myapplication.viewmodel.LojaViewModel
 
 @Composable
-fun TelaPagamento(onVoltar: () -> Unit, navController: NavController, viewModel: LojaViewModel){
+fun TelaPagamento(
+    onVoltar: () -> Unit,
+    navController: NavController,
+    viewModel: LojaViewModel,
+    onInicio: () -> Unit = {},
+    onCarrinho: () -> Unit = {},
+    onPedidos: () -> Unit = {},
+    onProdutos: () -> Unit = {}
+){
 
     Scaffold(
         topBar = {
@@ -49,20 +62,29 @@ fun TelaPagamento(onVoltar: () -> Unit, navController: NavController, viewModel:
                 onVoltar = onVoltar,
                 corFundo = MaterialTheme.colorScheme.background
             )
+        },
+        bottomBar = {
+            BarraDeNavegacaoInferior(
+                selectedIndex = 1,
+                onInicio = onInicio,
+                onCarrinho = onCarrinho,
+                onPedidos = onPedidos,
+                onProdutos = onProdutos
+            )
         }
     ){ innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                CardsModeloPagamento()
-                CardResumo(viewModel)
-                Spacer(modifier = Modifier.padding(0.dp, 70.dp))
-                BotaoConfirmarPagamento(navController)
-            }
+            CardsModeloPagamento()
+            CardResumo(viewModel)
+            Spacer(modifier = Modifier.height(16.dp))
+            BotaoConfirmarPagamento(navController)
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
@@ -149,9 +171,8 @@ fun CardResumo(viewModel: LojaViewModel){
         Text(
             "Resumo",
             fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            )
-
+            fontSize = 20.sp
+        )
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -164,45 +185,46 @@ fun CardResumo(viewModel: LojaViewModel){
             shape = RoundedCornerShape(12.dp),
             color = MaterialTheme.colorScheme.surface
         ) {
-            Row(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Column() {
-                    Row(
-                        modifier = Modifier.padding(0.dp, 10.dp)
-                    ) {
-                        Text(text = "$quantidadeItens itens")
-                        Spacer(modifier = Modifier.width(215.dp))
-                        Text("R$ %.2f".format(valorTotalProdutos))
-                    }
-
-                    Row(
-                        modifier = Modifier.padding(0.dp, 10.dp)
-                    ) {
-                        Text(text = "Entrega expressa")
-                        Spacer(modifier = Modifier.width(150.dp))
-                        Text("R$ %.2f".format(valorEntrega))
-                    }
-
-                    Row(
-                        modifier = Modifier.padding(0.dp, 10.dp)
-                    ) {
-                        Text(
-                            text = "Total",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
-                        )
-                        Spacer(modifier = Modifier.width(220.dp))
-                        Text("R$ %.2f".format(valorTotal))
-                    }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "$quantidadeItens itens")
+                    Text(text = "R$ %.2f".format(valorTotalProdutos))
                 }
 
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "Entrega expressa")
+                    Text(text = "R$ %.2f".format(valorEntrega))
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Total",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
+                    Text(
+                        text = "R$ %.2f".format(valorTotal),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
+                }
             }
         }
     }

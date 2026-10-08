@@ -4,7 +4,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Liquor
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -26,7 +25,6 @@ fun BarraDeNavegacaoInferior(
     onCarrinho: () -> Unit = {},
     onPedidos: () -> Unit = {},
     onProdutos: () -> Unit = {},
-    onPerfil: () -> Unit = {}
 ) {
     var itemSelecionado by remember { mutableIntStateOf(selectedIndex) }
 
@@ -35,7 +33,6 @@ fun BarraDeNavegacaoInferior(
         ItemBarra("Carrinho", Icons.Outlined.ShoppingCart, onCarrinho),
         ItemBarra("Pedidos", Icons.AutoMirrored.Filled.List, onPedidos),
         ItemBarra("Produtos", Icons.Outlined.Liquor, onProdutos),
-        ItemBarra("Perfil", Icons.Outlined.Person, onPerfil)
     )
 
     NavigationBar(

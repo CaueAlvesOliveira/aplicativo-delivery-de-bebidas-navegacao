@@ -1,6 +1,7 @@
 package com.example.myapplication.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.model.Produto
 import com.example.myapplication.ui.components.BarraDeNavegacaoInferior
+import com.example.myapplication.navegacao.rotas.Rotas
 import com.example.myapplication.ui.components.TopBarTela
 import com.example.myapplication.viewmodel.LojaViewModel
 import java.util.Locale
@@ -59,7 +61,8 @@ fun TelaListaProdutos(
     onInicio: () -> Unit = {},
     onCarrinho: () -> Unit = {},
     onPedidos: () -> Unit = {},
-    onProdutos: () -> Unit = {}
+    onProdutos: () -> Unit = {},
+    onAbrir: (Int) -> Unit,
 ) {
 
     var produtoParaExcluir by remember { mutableStateOf<Produto?>(null) }
@@ -106,7 +109,8 @@ fun TelaListaProdutos(
                         produto = produto,
                         nomeCategoria = viewModel.buscarCategoria(produto.categoriaId)?.nome,
                         onEditar = { onEditar(produto.id) },
-                        onExcluir = { produtoParaExcluir = produto }
+                        onExcluir = { produtoParaExcluir = produto},
+                        onAbrir = {onAbrir(produto.id)},
                     )
                 }
             }
@@ -130,10 +134,13 @@ fun CardProdutoLista(
     produto: Produto,
     nomeCategoria: String?,
     onEditar: () -> Unit,
-    onExcluir: () -> Unit
+    onExcluir: () -> Unit,
+    onAbrir: () -> Unit,
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable{onAbrir()},
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {

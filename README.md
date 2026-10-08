@@ -1,27 +1,28 @@
-# Delivery de Bebidas
+# Delivery de Bebidas - MAF (Mínimo Aplicativo Funcional)
 
-Aplicativo mobile de **delivery de bebidas**, desenvolvido como trabalho acadêmico para a disciplina de **Desenvolvimento de Aplicativos Móveis**.
+Aplicativo Android de **delivery de bebidas**, desenvolvido em **Kotlin + Jetpack Compose** para a disciplina de **Desenvolvimento de Aplicativos Móveis**.
 
-O projeto tem como objetivo aplicar, na prática, conceitos de desenvolvimento mobile, criação de interfaces, navegação entre telas, gerenciamento de dados e implementação de funcionalidades comuns em aplicativos de delivery.
-
----
-
-### Objetivos
-
-* Desenvolver uma aplicação mobile funcional;
-* Aplicar conceitos apresentados na disciplina;
+Este repositório é a **segunda parte do Trabalho** da A2 e dá continuação ao Trabalho 1. Aqui o app deixou de ser só visual: ele tem **navegação real**, **listas reativas**, **cadastro/edição/remoção de itens**, **telas de detalhes** e um **carrinho** que realmente soma valores.
 
 ---
 
-## Desenvolvimento no Figma
+## Objetivos
 
-Em anexo estará o link para visualizar o board onde foi desenvolvido a UI das seguintes 5 telas:
+* Desenvolver uma aplicação mobile funcional, com navegação e dados que se movem de verdade;
+* Aplicar os conceitos vistos na disciplina: `NavHost`, `LazyColumn`, `Card`, `mutableStateListOf`, formulários, `ViewModel`;
+* Documentar o processo e as decisões do trio.
 
-* Tela de Inicio
+---
+
+## Figma (Trabalho 1)
+
+Board com a UI das 5 telas originais do Trabalho 1:
+
+* Tela de Início
 * Tela do Produto
 * Tela do Carrinho
 * Tela do Pagamento
-* Tela de Verificação do pedido
+* Tela de Verificação (rastreio) do pedido
 
 https://www.figma.com/design/FGavv6Oe5wV3DbMC6QftjL/atividade-android?node-id=0-1&t=4b5kjobzLUZ87pgu-1
 
@@ -47,71 +48,117 @@ De forma hipotética, por comissão sobre cada pedido repassada aos estabelecime
 
 **Quais decisões de tela vieram dessas respostas?**
 
-Por isso a tela inicial mostra a categoria e os produtos mais pedidos, o usuário já sabe o que quer, então a prioridade é reduzir cliques até o carrinho, não apresentar o app. Pelo mesmo motivo, a tela de rastreio expõe o tempo estimado de chegada em destaque em vez de detalhes menos urgentes como o histórico completo do pedido.
+Por isso a tela inicial mostra a categoria e os produtos mais pedidos: o usuário já sabe o que quer, então a prioridade é reduzir cliques até o carrinho, não apresentar o app. Pelo mesmo motivo, a tela de rastreio expõe o tempo estimado de chegada em destaque em vez de detalhes menos urgentes como o histórico completo do pedido.
 
 ---
 
-## Anexos
+## O que o app faz
 
-https://drive.google.com/drive/folders/1D5RiLn466mixH6bFV3fAX9WgHVDCdutl?usp=sharing
+* **Início:** categorias em carrossel, banner de frete grátis, "Mais pedidos por aqui" e "Ofertas da Semana" (produtos com desconto). Dá para abrir um produto ou adicioná-lo direto ao carrinho pelo botão **+**.
+* **Produtos (lista):** todos os produtos cadastrados. É possível **adicionar** (botão flutuante), **editar**, **remover** (com diálogo de confirmação) e **abrir** o detalhe.
+* **Categorias (lista):** todas as categorias, com a quantidade de produtos de cada uma. Também permite **adicionar**, **editar**, **remover** e **abrir** os produtos daquela categoria.
+* **Carrinho:** altera a quantidade (e remove ao chegar em zero), calcula subtotal, taxa de entrega e total, e leva ao pagamento.
+* **Pagamento → Rastreio:** escolha da forma de pagamento, resumo calculado a partir do carrinho e acompanhamento do pedido.
 
 ---
 
-## Tecnologias Utilizadas
+## Mapa de telas e navegação
 
-* **Linguagem:** [Kotlin]
+O app tem **10 telas**, todas registradas em um único `NavHost` (`navegacao/AppNavigation.kt`).
+
+| # | Tela | Rota | Função |
+|---|------|------|--------|
+| 1 | Início | `home` | Vitrine: categorias, mais pedidos e ofertas |
+| 2 | **Lista de Produtos** | `produtos` | Lista + adicionar / editar / remover |
+| 3 | **Detalhes do Produto** | `produto/{id}` | Imagem, dados, seletor de quantidade e total calculado |
+| 4 | Formulário de Produto | `formProduto/{id}` | Cria (`id = -1`) ou edita um produto |
+| 5 | **Lista de Categorias** | `categorias` | Lista + adicionar / editar / remover |
+| 6 | **Detalhes da Categoria** | `produtosPorCategoria/{id}` | Produtos pertencentes àquela categoria |
+| 7 | Formulário de Categoria | `formCategoria/{id}` | Cria ou edita uma categoria |
+| 8 | Carrinho | `carrinho` | Itens, quantidades e resumo do pedido |
+| 9 | Pagamento | `pagamento` | Forma de pagamento e confirmação |
+| 10 | Rastreio | `rastreio` | Status e tempo estimado do pedido |
+
+A **barra inferior** (`NavigationBar`) leva a **Início, Carrinho, Pedidos (Rastreio) e Produtos** em qualquer tela principal.
+
+---
+
+## Requisitos do Trabalho 2: onde cada um foi atendido
+
+| Requisito (enunciado) | Onde está no código |
+|---|---|
+| Mínimo de 7 telas navegáveis | 10 telas em `ui/screens/` |
+| `NavHost` central + objeto `Rotas` com `const val String` | `navegacao/AppNavigation.kt` e `navegacao/rotas/Rotas.kt` |
+| `NavigationBar` funcionando | `ui/components/BarraDeNavegacaoInferior.kt` |
+| `navController.navigate(...)` em todos os botões | callbacks (`onInicio`, `onCarrinho`, `onAbrir`, `onNovo`…) ligados no `NavHost` |
+| `TopAppBar` com botão de voltar (`popBackStack()`) | `ui/components/Cabecalho.kt` (`TopBarTela` + `BotaoVoltar`), usado nas telas de lista, forms, carrinho, pagamento e rastreio |
+| 2 `data class` diferentes | `Produto` e `Categoria` (além de `ItemCarrinho`, `DadosFormProduto`, `ErrosFormProduto`, `ItemBarra`) |
+| 2 telas de lista com `LazyColumn` + `Card` + `mutableStateListOf` | `TelaListaProdutos` e `TelaListaCategorias`; as listas vivem em `LojaViewModel` |
+| **Adicionar** pela UI (`OutlinedTextField` + `Button`) | `TelaFormProduto` e `TelaFormCategoria` |
+| **Remover** / editar pela UI | ícones de lixeira e lápis em cada `Card`, com `AlertDialog` de confirmação |
+| Clicar no item abre **Detalhes** com o item certo | `produto/{id}` e `produtosPorCategoria/{id}`: o `id` vai na rota e a tela busca o item no `ViewModel` |
+| Detalhes com algo **a mais** que o exemplo de aula | ver [seção 4 da documentação](#4-qual-foi-a-complexidade-extra-na-tela-de-detalhes) |
+
+---
+
+
+
+## Tecnologias utilizadas
+
+* **Linguagem:** Kotlin
 * **IDE:** Android Studio
 * **Plataforma:** Android
-* **Interface:** [Jetpack Compose]
+* **Interface:** Jetpack Compose (Material 3)
+* **Navegação:** Navigation Compose (`NavHost`, `NavController`)
+* **Estado:** `ViewModel` + `mutableStateListOf` / `mutableStateOf`
 
 ---
 
-## Estrutura do Projeto
+## Estrutura do projeto
 
 ```text
-app/
-├── build/
-├── src/
-│   ├── androidTest/
-│   └── main/
-│       ├── java/
-│       │   └── com/example/myapplication/
-│       │       ├── model/
-│       │       │   ├── Categoria
-│       │       │   ├── EstadoEtapa
-│       │       │   └── Produto
-│       │       ├── ui/
-│       │       │   ├── screens/
-│       │       │   │   ├── TelaInicio.kt
-│       │       │   │   ├── TelaProduto.kt
-│       │       │   │   └── TelaRastreio.kt
-│       │       │   └── theme/
-│       │       └── MainActivity.kt
-│       ├── keepRules/
-│       └── res/
-│           ├── drawable/
-│           ├── mipmap-anydpi-v26/
-│           ├── mipmap-hdpi/
-│           ├── mipmap-mdpi/
-│           └── mipmap-xhdpi/
-│
-├── build.gradle
-└── ...
+app/src/main/java/com/example/myapplication/
+├── MainActivity.kt
+├── model/
+│   ├── Produto.kt
+│   ├── Categoria.kt
+│   ├── ItemCarrinho.kt
+│   ├── ItemBarra.kt
+│   ├── DadosFormProduto.kt
+│   ├── ErrosFormProduto.kt
+│   └── EstadoEtapa.kt
+├── viewmodel/
+│   └── LojaViewModel.kt          # listas reativas, validações e regras do carrinho
+├── navegacao/
+│   ├── AppNavigation.kt          # NavHost central
+│   └── rotas/
+│       └── Rotas.kt              # rotas nomeadas (const val)
+└── ui/
+    ├── components/
+    │   ├── BarraDeNavegacaoInferior.kt
+    │   └── Cabecalho.kt          # TopBarTela + BotaoVoltar
+    ├── screens/
+    │   ├── telaInicio.kt
+    │   ├── TelaLIstaProdutos.kt
+    │   ├── TelaProduto.kt        # detalhes do produto
+    │   ├── TelaFormProduto.kt
+    │   ├── TelaListaCategorias.kt
+    │   ├── TelaProdutoPorCategoria.kt  # detalhes da categoria
+    │   ├── TelaFormCategoria.kt
+    │   ├── TelaCarrinho.kt
+    │   ├── TelaPagamento.kt
+    │   └── TelaRastreio.kt
+    └── theme/
 ```
-
----
-
-## Como Executar
+## Como executar
 
 ### Pré-requisitos
 
-Para executar o projeto, é necessário ter instalado:
-
 * [Android Studio](https://developer.android.com/studio)
-* Android SDK compatível com o projeto;
-* JDK compatível com a versão utilizada pelo projeto.
+* Android SDK compatível com o projeto
+* JDK compatível com a versão utilizada pelo projeto
 
-### Instalação
+### Passo a passo
 
 1. Clone este repositório:
 
@@ -120,12 +167,38 @@ git clone <URL_DO_REPOSITORIO>
 ```
 
 2. Abra o projeto no **Android Studio**.
+3. Aguarde o Gradle sincronizar e baixar as dependências.
+4. Conecte um dispositivo Android ou inicie um emulador.
+5. Clique em **Run ▶**.
 
-3. Aguarde o Gradle sincronizar e baixar as dependências necessárias.
+### Roteiro rápido de teste (o mesmo da apresentação)
 
-4. Conecte um dispositivo Android ou inicialize um emulador.
+1. Na barra inferior, abra **Produtos** → toque no **+** → cadastre um produto → ele aparece na lista.
+2. Toque na **lixeira** de um produto → confirme → ele some da lista.
+3. Toque em um produto (fora dos ícones) → confira que os **detalhes são do item tocado** → mude a quantidade e veja o total mudar → **Adicionar ao carrinho**.
+4. Abra **Início → Gerenciar** (Categorias) → adicione, edite e remova uma categoria.
+5. Toque em uma categoria → veja somente os produtos dela.
+6. No **Carrinho**, altere quantidades → **Ir para pagamento** → **Confirmar pedido** → veja o **Rastreio**.
+7. Navegue por todas as abas da barra inferior e use o botão de voltar.
 
-5. Execute o projeto pelo botão **Run ▶** do Android Studio.
+---
+
+## Limitações conhecidas
+
+Como previsto no enunciado (seção 5), os dados vivem **apenas em memória**: ao fechar o app, o que foi adicionado se perde, e a persistência fica para o próximo trabalho. Também são limitações desta versão:
+
+* O **Rastreio é estático** (pedido nº, tempo e entregador fixos); ele não reflete o pedido feito no carrinho;
+* O campo de **cupom** do carrinho e a **busca** da tela inicial ainda não têm função;
+* O **desconto** dos produtos em oferta é exibido como selo, mas **ainda não é aplicado ao preço** cobrado;
+* O **carrinho não é esvaziado** depois de confirmar o pedido;
+* O **frete** é fixo (R$ 10,99), apesar do banner de "Frete grátis acima de R$ 60";
+* Os ícones da forma de pagamento são provisórios.
+
+---
+
+## Anexos
+
+https://drive.google.com/drive/folders/1D5RiLn466mixH6bFV3fAX9WgHVDCdutl?usp=sharing
 
 ---
 

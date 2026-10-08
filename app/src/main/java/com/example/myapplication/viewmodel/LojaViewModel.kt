@@ -12,10 +12,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import com.example.myapplication.R
 import com.example.myapplication.model.Categoria
+import com.example.myapplication.model.DadosFormProduto
+import com.example.myapplication.model.ErrosFormProduto
 import com.example.myapplication.model.ItemCarrinho
 import com.example.myapplication.model.Produto
+import java.util.Locale
 
 class LojaViewModel : ViewModel() {
+
+    private var proximoIdProduto = 1
+    private var proximoIdCategoria = 1
 
     val produtos = mutableStateListOf<Produto>()
 
@@ -34,10 +40,9 @@ class LojaViewModel : ViewModel() {
         val cerveja = idDaCategoria("Cerveja")
         val vinho = idDaCategoria("Vinho")
         val destilada = idDaCategoria("Destilada")
-        val gelo = idDaCategoria("Gelo")
         val refrigerante = idDaCategoria("Refrigerante")
 
-        adicionarProduto("Puro Malte", "350ml", "Cervejaria Noturna", 4.90, R.drawable.puro_malte, "Lager leve e refrescante, com final seco e pouco amargor. Ideal pra abrir a noite.",cerveja)
+        adicionarProduto("Puro Malte", "350ml", "Cervejaria Noturna", 4.90, R.drawable.puro_malte, "Lager leve e refrescante, com final seco e pouco amargor. Ideal pra abrir a noite.", cerveja)
         adicionarProduto("Vinho Tinto", "750ml", "Adega Vale Rubi", 32.90, R.drawable.vinho, "Tinto seco de corpo médio, com aroma de frutas vermelhas e taninos macios. Combina com massas e carnes.", vinho)
         adicionarProduto("Energético", "2L", "Distribuidora Vo", 22.90, R.drawable.energetico, "Energético gelado de sabor intenso e cítrico, em garrafa de 2L. Rende para a galera toda.", refrigerante)
         adicionarProduto("Cerveja Long Neck", "355ml", "Boteco Gelada", 7.90, R.drawable.cerveja, "Pilsen leve em long neck, sempre gelada. Boa pedida pro churrasco e pro fim de tarde.", cerveja)
@@ -47,6 +52,72 @@ class LojaViewModel : ViewModel() {
         adicionarProduto("Gin", "750ml", "Botânico Gin Club", 79.90, R.drawable.gin, "10", "Notas de zimbro com toques cítricos e botânicos. Combina com tônica gelada e uma rodela de limão.", destilada)
         adicionarProduto("Cachaça", "700ml", "Alambique Serra Dourada", 24.90, R.drawable.cachaca, "30", "Cachaça de sabor suave e toque adocicado de madeira. Ótima pura ou na caipirinha.", destilada)
         adicionarProduto("Coca Cola", "2L", "Mercearia Dois Irmãos", 9.90, R.drawable.refrigerante, "35", "Refrigerante sabor cola, bem gelado e com gás. Perfeito para acompanhar pizza ou lanche.", refrigerante)
+    }
+
+    private fun converterPreco(texto: String): Double? {
+        return texto.replace(',', '.').toDoubleOrNull()
+    }
+
+    fun textoDoPreco(preco: Double): String {
+        return String.format(Locale.forLanguageTag("pt-BR"), "%.2f", preco)
+    }
+
+    fun filtrarDesconto(texto: String): String {
+        return texto.filter { it.isDigit() }.take(2)
+    }
+
+    fun validarProduto(dados: DadosFormProduto): ErrosFormProduto {
+        val preco = converterPreco(dados.precoTexto)
+        return ErrosFormProduto(
+            nome = if (dados.nome.isBlank()) "Informe o nome" else null,
+            estabelecimento = if (dados.estabelecimento.isBlank()) "Informe o estabelecimento" else null,
+            preco = if (preco == null || preco <= 0.0) "Informe um preço maior que zero" else null,
+            categoria = if (buscarCategoria(dados.categoriaId) == null) "Selecione uma categoria" else null
+        )
+    }
+
+    fun salvarProduto(produtoId: Int?, dados: DadosFormProduto): Boolean {
+        if (validarProduto(dados).temErro) return false
+        val preco = converterPreco(dados.precoTexto) ?: return false
+
+        val nome = dados.nome.trim()
+        val volume = dados.volume.trim()
+        val estabelecimento = dados.estabelecimento.trim()
+        val descricao = dados.descricao.trim()
+        val desconto = dados.descontoTexto.ifBlank { null }
+
+        if (produtoId != null) {
+            editarProduto(
+                produtoId, nome, volume, estabelecimento,
+                preco, dados.imagem, desconto, descricao, dados.categoriaId
+            )
+        } else if (desconto != null) {
+            adicionarProduto(
+                nome, volume, estabelecimento,
+                preco, dados.imagem, desconto, descricao, dados.categoriaId
+            )
+        } else {
+            adicionarProduto(
+                nome, volume, estabelecimento,
+                preco, dados.imagem, descricao, dados.categoriaId
+            )
+        }
+        return true
+    }
+
+    fun validarNomeCategoria(nome: String): String? {
+        return if (nome.isBlank()) "Informe o nome" else null
+    }
+
+    fun salvarCategoria(categoriaId: Int?, nome: String, icone: ImageVector, cor: Color): Boolean {
+        if (validarNomeCategoria(nome) != null) return false
+
+        if (categoriaId != null) {
+            editarCategoria(categoriaId, nome.trim(), icone, cor)
+        } else {
+            adicionarCategoria(nome.trim(), icone, cor)
+        }
+        return true
     }
 
     fun produtosOferta(): List<Produto> {
@@ -82,6 +153,7 @@ class LojaViewModel : ViewModel() {
 
     fun removerProduto(id: Int) {
         produtos.removeAll { it.id == id }
+        carrinho.removeAll { it.produtoId == id }
     }
 
     fun editarProduto(
@@ -116,8 +188,12 @@ class LojaViewModel : ViewModel() {
     }
 
     fun removerCategoria(id: Int) {
+
+        val idsRemovidos = produtos.filter { it.categoriaId == id }.map { it.id }.toSet()
+
         categorias.removeAll { it.id == id }
         produtos.removeAll { it.categoriaId == id }
+        carrinho.removeAll { it.produtoId in idsRemovidos }
     }
 
     fun editarCategoria(id: Int, nome: String, icone: ImageVector, cor: Color) {
@@ -160,17 +236,11 @@ class LojaViewModel : ViewModel() {
     }
 
     private fun gerarIdDoProduto(): Int {
-        if (produtos.isEmpty()) {
-            return 1
-        }
-        return produtos.last().id + 1
+        return proximoIdProduto++
     }
 
     private fun gerarIdDaCategoria(): Int {
-        if (categorias.isEmpty()) {
-            return 1
-        }
-        return categorias.last().id + 1
+        return proximoIdCategoria++
     }
 
     private fun idDaCategoria(nome: String): Int {

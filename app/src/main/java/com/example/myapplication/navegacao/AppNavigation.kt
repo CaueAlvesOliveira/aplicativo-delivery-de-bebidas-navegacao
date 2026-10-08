@@ -34,7 +34,7 @@ fun NavagacaoEntreTela() {
         navController = navInterno,
         startDestination = Rotas.HOME
     ) {
-        composable(Rotas.HOME){ telaInicio(navInterno, viewModel) }
+        composable(Rotas.HOME){ telaInicio(navInterno, viewModel)}
         composable(Rotas.PRODUTO){backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: -1
             TelaProduto(
@@ -57,7 +57,8 @@ fun NavagacaoEntreTela() {
                 onInicio = navInicio,
                 onCarrinho = navCarrinho,
                 onPedidos = navPedidos,
-                onProdutos = navProdutos
+                onProdutos = navProdutos,
+                onAbrir = {id -> navInterno.navigate(Rotas.produto(id))},
             )
         }
         composable(Rotas.FORM_PRODUTO){backStackEntry ->

@@ -6,24 +6,6 @@ Este repositório é a **segunda parte do Trabalho** da A2 e dá continuação a
 
 ---
 
-## Sumário
-
-1. [Objetivos](#objetivos)
-2. [Figma (Trabalho 1)](#figma-trabalho-1)
-3. [Canvas: por que esse aplicativo existe?](#canvas-por-que-esse-aplicativo-existe)
-4. [O que o app faz](#o-que-o-app-faz)
-5. [Mapa de telas e navegação](#mapa-de-telas-e-navegação)
-6. [Requisitos do Trabalho 2: onde cada um foi atendido](#requisitos-do-trabalho-2-onde-cada-um-foi-atendido)
-7. [Documentação do processo e das decisões](#documentação-do-processo-e-das-decisões)
-8. [Tecnologias utilizadas](#tecnologias-utilizadas)
-9. [Estrutura do projeto](#estrutura-do-projeto)
-10. [Como executar](#como-executar)
-11. [Limitações conhecidas](#limitações-conhecidas)
-12. [Anexos](#anexos)
-13. [Licença](#licença)
-
----
-
 ## Objetivos
 
 * Desenvolver uma aplicação mobile funcional, com navegação e dados que se movem de verdade;

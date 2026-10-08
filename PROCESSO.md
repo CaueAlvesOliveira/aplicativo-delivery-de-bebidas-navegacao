@@ -4,8 +4,14 @@ Durante a primeira parte do trabalho foram desenvolvidas 3 telas que não implem
 
  * Tela de Pagamento;
  * Tela do Carrinho;
- * Tela da Entrega;
  * Tela de Produtos por Categoria;
+
+Além disso foram criadas telas para mostrar os produtos e categorias em colunas que levam aos formulários, isso foi feito para cumprir com os requisitos descritos no trabalho. Dessa forma fechamos o fluxo principal do aplicativo que vai desde a tela inicial até a tela de rastreio com o pedido, junto das telas que permitem a manipulação das listas.
+
+* Tela produtos
+* Tela categorias
+* Tela formulario produtos
+* Tela formulario categorias
 
    ![print do Rotas.kt](anexos/processo/prints/Captura%20de%20tela%202026-10-01%20233318.png)
 

@@ -119,7 +119,6 @@ fun TelaCarrinho(
 
                     item {
                         Spacer(Modifier.height(8.dp))
-                        CampoCupom()
                     }
                 }
 
@@ -218,44 +217,6 @@ private fun StepperQuantidade(
             icone = Icons.Default.Add,
             descricao = "Aumentar quantidade",
             onClick = onMais
-        )
-    }
-}
-
-@Composable
-private fun CampoCupom(onAplicar: (String) -> Unit = {}) {
-    var cupom by remember { mutableStateOf("") }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(20.dp))
-            .border(1.dp, CorBorda, RoundedCornerShape(20.dp))
-            .padding(horizontal = 20.dp, vertical = 18.dp)
-    ) {
-        Text(text = "%", fontSize = 22.sp, color = Color.Gray)
-
-        Spacer(Modifier.width(14.dp))
-
-        Box(modifier = Modifier.weight(1f)) {
-            if (cupom.isEmpty()) {
-                Text(text = "Tem um cupom?", fontSize = 16.sp, color = Color.Gray)
-            }
-            BasicTextField(
-                value = cupom,
-                onValueChange = { cupom = it },
-                singleLine = true,
-                textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        Text(
-            text = "Aplicar",
-            fontSize = 14.sp,
-            color = CorAplicar,
-            modifier = Modifier.clickable { onAplicar(cupom) }
         )
     }
 }

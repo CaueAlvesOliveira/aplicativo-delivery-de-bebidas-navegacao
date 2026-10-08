@@ -21,6 +21,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
@@ -39,12 +42,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapplication.R
 import com.example.myapplication.model.Produto
-import com.example.myapplication.ui.components.BotaoVoltar
+import com.example.myapplication.ui.components.TopBarTela
 import com.example.myapplication.viewmodel.LojaViewModel
 import java.util.Locale
 
@@ -69,6 +70,7 @@ fun TelaCarrinho(
     }
 
     Scaffold(
+        topBar = { TopBarTela("Seu carrinho", onVoltar) },
         containerColor = CorFundo,
         contentColor = Color.Black
     ) { innerPadding ->
@@ -78,8 +80,6 @@ fun TelaCarrinho(
                 .padding(innerPadding)
                 .imePadding()
         ) {
-            CabecalhoCarrinho(quantidadeItens = linhas.size, onVoltar = onVoltar)
-
             if (linhas.isEmpty()) {
                 CarrinhoVazio(
                     onContinuarComprando = onVoltar,
@@ -116,34 +116,6 @@ fun TelaCarrinho(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun CabecalhoCarrinho(quantidadeItens: Int, onVoltar: () -> Unit) {
-    val titulo = when (quantidadeItens) {
-        0 -> "Seu carrinho"
-        1 -> "Seu carrinho - 1 item"
-        else -> "Seu carrinho - $quantidadeItens itens"
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = PaddingHorizontal, vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        BotaoVoltar(onVoltar)
-
-        Spacer(Modifier.width(16.dp))
-
-        Text(
-            text = titulo,
-            fontSize = 28.sp,
-            lineHeight = 34.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.weight(1f)
-        )
     }
 }
 
@@ -216,7 +188,7 @@ private fun StepperQuantidade(
             .padding(horizontal = 8.dp, vertical = 6.dp)
     ) {
         BotaoQuantidade(
-            icone = R.drawable.remove_24,
+            icone = Icons.Default.Remove,
             descricao = "Diminuir quantidade",
             onClick = onMenos
         )
@@ -229,7 +201,7 @@ private fun StepperQuantidade(
         )
 
         BotaoQuantidade(
-            icone = R.drawable.add_24,
+            icone = Icons.Default.Add,
             descricao = "Aumentar quantidade",
             onClick = onMais
         )

@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -28,22 +31,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapplication.R
-import com.example.myapplication.ui.components.CabecalhoTela
+import com.example.myapplication.ui.components.TopBarTela
 
 @Composable
 fun TelaPagamento(onVoltar:() -> Unit){
 
-    Scaffold(){ innerPadding ->
+    Scaffold(
+        topBar = {
+            TopBarTela(
+                titulo = "Pagamento",
+                onVoltar = onVoltar,
+                corFundo = MaterialTheme.colorScheme.background
+            )
+        }
+    ){ innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            CabecalhoTela("Pagamento", onVoltar)
-
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -73,9 +80,9 @@ fun CardsModeloPagamento() {
     var itemSelecionado by remember { mutableStateOf(0) }
 
     val itens = listOf(
-        Triple("Pix", R.drawable.add_24, 0),
-        Triple("Cartão de Crédito", R.drawable.search_24, 1),
-        Triple("Dinheiro na Entrega", R.drawable.list_24, 2),
+        Triple("Pix", Icons.Default.Add, 0),
+        Triple("Cartão de Crédito", Icons.Default.Search, 1),
+        Triple("Dinheiro na Entrega", Icons.Default.List, 2),
     )
 
     Column(
@@ -103,7 +110,7 @@ fun CardsModeloPagamento() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = painterResource(id = icone),
+                        imageVector = icone,
                         contentDescription = nome,
                         modifier = Modifier.size(24.dp),
                         tint = if (itemSelecionado == index) Color.Green else Color.Gray

@@ -45,10 +45,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.model.Produto
+import com.example.myapplication.ui.components.TopBarTela
 import com.example.myapplication.viewmodel.LojaViewModel
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaListaProdutos(
     viewModel: LojaViewModel,
@@ -60,20 +60,7 @@ fun TelaListaProdutos(
     var produtoParaExcluir by remember { mutableStateOf<Produto?>(null) }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Produtos", fontWeight = FontWeight.Bold)},
-                navigationIcon = {
-                    IconButton(onClick = onVoltar) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrow_back),
-                            contentDescription = "Voltar"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFECECEC))
-            )
-        },
+        topBar = { TopBarTela("Produtos", onVoltar) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onNovo,

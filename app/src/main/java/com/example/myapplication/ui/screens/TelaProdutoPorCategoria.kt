@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.model.Produto
+import com.example.myapplication.ui.components.TopBarTela
 import com.example.myapplication.viewmodel.LojaViewModel
 import java.util.Locale
 
@@ -60,25 +61,7 @@ fun TelaProdutoPorCategoria(
     val produtos = viewModel.produtos.filter { it.categoriaId == categoriaId }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(categoria.nome, fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onVoltar) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrow_back),
-                            contentDescription = "Voltar"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFECECEC),
-                    titleContentColor = Color.Black,
-                    navigationIconContentColor = Color.Black,
-                    actionIconContentColor = Color.Black
-                )
-            )
-        },
+        topBar = { TopBarTela(categoria.nome, onVoltar) },
         containerColor = Color(0xFFECECEC),
         contentColor = Color.Black
     ) { innerPadding ->

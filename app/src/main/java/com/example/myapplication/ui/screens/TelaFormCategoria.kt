@@ -20,6 +20,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AcUnit
+import androidx.compose.material.icons.outlined.Liquor
+import androidx.compose.material.icons.outlined.LocalDrink
+import androidx.compose.material.icons.outlined.SportsBar
+import androidx.compose.material.icons.outlined.WineBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,14 +52,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.model.Categoria
+import com.example.myapplication.ui.components.TopBarTela
 import com.example.myapplication.viewmodel.LojaViewModel
 
 private val ICONES_DISPONIVEIS = listOf(
-    R.drawable.sports_bar_24dp_e3e3e3_fill0_wght400_grad0_opsz24,
-    R.drawable.wine_bar_24,
-    R.drawable.liquor_24,
-    R.drawable.ice_24,
-    R.drawable.water_full_24dp_e3e3e3_fill0_wght400_grad0_opsz24
+    Icons.Outlined.SportsBar,
+    Icons.Outlined.WineBar,
+    Icons.Outlined.Liquor,
+    Icons.Outlined.AcUnit,
+    Icons.Outlined.LocalDrink
 )
 
 private val CORES_DISPONIVEIS = listOf(
@@ -68,7 +75,6 @@ private val CORES_DISPONIVEIS = listOf(
     Color(0xFFEF5350)
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaFormCategoria(
     categoriaId: Int,
@@ -79,7 +85,12 @@ fun TelaFormCategoria(
     val editando = existente != null
 
     var nome by rememberSaveable { mutableStateOf(existente?.nome ?: "") }
-    var icone by rememberSaveable { mutableIntStateOf(existente?.icone ?: ICONES_DISPONIVEIS.first()) }
+    var indiceIcone by rememberSaveable {
+        mutableIntStateOf(
+            existente?.let { ICONES_DISPONIVEIS.indexOf(it.icone) }?.coerceAtLeast(0) ?: 0
+        )
+    }
+    val icone = ICONES_DISPONIVEIS[indiceIcone]
     var indiceCor by rememberSaveable {
         mutableIntStateOf(
             existente?.let { CORES_DISPONIVEIS.indexOf(it.cor) }?.coerceAtLeast(0) ?: 0
@@ -103,29 +114,7 @@ fun TelaFormCategoria(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        if (editando) "Editar categoria" else "Nova categoria",
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onVoltar) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrow_back),
-                            contentDescription = "Voltar"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFECECEC),
-                    titleContentColor = Color.Black,
-                    navigationIconContentColor = Color.Black
-                )
-            )
-        },
+        topBar = { TopBarTela(if (editando) "Editar categoria" else "Nova categoria", onVoltar) },
         containerColor = Color(0xFFECECEC),
         contentColor = Color.Black
     ) { innerPadding ->
@@ -173,10 +162,9 @@ fun TelaFormCategoria(
 
             Text("Ícone", fontWeight = FontWeight.Bold, fontSize = 15.sp)
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(ICONES_DISPONIVEIS) { recurso ->
-                    val selecionado = recurso == icone
+                itemsIndexed(ICONES_DISPONIVEIS) { indice, vetor ->
+                    val selecionado = indice == indiceIcone
                     Box(
-                        contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .size(56.dp)
                             .background(Color.White, RoundedCornerShape(12.dp))
@@ -185,10 +173,11 @@ fun TelaFormCategoria(
                                 color = if (selecionado) Color(0xFFFF7043) else Color.LightGray,
                                 shape = RoundedCornerShape(12.dp)
                             )
-                            .clickable { icone = recurso }
+                            .clickable { indiceIcone = indice },
+                        contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = painterResource(id = recurso),
+                            imageVector = vetor,
                             contentDescription = "Opção de ícone",
                             tint = corSelecionada,
                             modifier = Modifier.size(28.dp)

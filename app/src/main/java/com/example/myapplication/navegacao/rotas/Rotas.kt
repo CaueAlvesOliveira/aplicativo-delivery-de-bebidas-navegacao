@@ -6,7 +6,6 @@ object Rotas {
     //const val PERFIL = "perfil"
     const val CARRINHO = "carrinho"
     const val PAGAMENTO = "pagamento"
-    const val ENTREGA = "entrega"
     const val RASTREIO = "rastreio"
     const val PRODUTOS_POR_CATEGORIA = "produtosPorCategoria/{id}"
     const val PRODUTOS = "produtos"

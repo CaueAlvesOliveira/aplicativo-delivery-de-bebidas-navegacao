@@ -45,6 +45,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
+import com.example.myapplication.ui.components.TopBarTela
 import com.example.myapplication.viewmodel.LojaViewModel
 import java.util.Locale
 
@@ -60,7 +61,6 @@ private val IMAGENS_DISPONIVEIS = listOf(
     R.drawable.energetico
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaFormProduto(
     produtoId: Int,
@@ -118,25 +118,7 @@ fun TelaFormProduto(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        if (editando) "Editar produto" else "Novo produto",
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onVoltar) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrow_back),
-                            contentDescription = "Voltar"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFECECEC))
-            )
-        },
+        topBar = { TopBarTela(if (editando) "Editar produto" else "Novo produto", onVoltar) },
         containerColor = Color(0xFFECECEC),
         contentColor = Color.Black
     ) { innerPadding ->

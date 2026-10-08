@@ -1,11 +1,9 @@
 package com.example.myapplication.model
 
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 
-data class Categoria(
-    val id: Int,
+data class ItemBarra(
     val nome: String,
     val icone: ImageVector,
-    val cor: Color
+    val onClick: () -> Unit = {}
 )

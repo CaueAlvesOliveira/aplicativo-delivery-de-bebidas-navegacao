@@ -1,11 +1,18 @@
 package com.example.myapplication.viewmodel
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AcUnit
+import androidx.compose.material.icons.outlined.Liquor
+import androidx.compose.material.icons.outlined.LocalDrink
+import androidx.compose.material.icons.outlined.SportsBar
+import androidx.compose.material.icons.outlined.WineBar
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import com.example.myapplication.R
 import com.example.myapplication.model.Categoria
-import com.example.myapplication.model.ItensComprados
+import com.example.myapplication.model.ItemCarrinho
 import com.example.myapplication.model.Produto
 
 class LojaViewModel : ViewModel() {
@@ -14,21 +21,27 @@ class LojaViewModel : ViewModel() {
 
     val categorias = mutableStateListOf<Categoria>()
 
-    val itensComprados = mutableStateListOf<ItensComprados>()
+    val carrinho = mutableStateListOf<ItemCarrinho>()
 
     init {
 
-        adicionarCategoria("Cerveja", R.drawable.sports_bar_24dp_e3e3e3_fill0_wght400_grad0_opsz24, Color(0xFF29B6F6))
-        adicionarCategoria("Vinho", R.drawable.wine_bar_24, Color(0xFF7E57C2))
-        adicionarCategoria("Destilada", R.drawable.liquor_24, Color(0xFFFF7043))
-        adicionarCategoria("Gelo", R.drawable.ice_24, Color(0xFF66BB6A))
-        adicionarCategoria("Refrigerante", R.drawable.water_full_24dp_e3e3e3_fill0_wght400_grad0_opsz24, Color(0xFF8D6E63))
+        adicionarCategoria("Cerveja", Icons.Outlined.SportsBar, Color(0xFF29B6F6))
+        adicionarCategoria("Vinho", Icons.Outlined.WineBar, Color(0xFF7E57C2))
+        adicionarCategoria("Destilada", Icons.Outlined.Liquor, Color(0xFFFF7043))
+        adicionarCategoria("Gelo", Icons.Outlined.AcUnit, Color(0xFF66BB6A))
+        adicionarCategoria("Refrigerante", Icons.Outlined.LocalDrink, Color(0xFF8D6E63))
 
         val cerveja = idDaCategoria("Cerveja")
         val vinho = idDaCategoria("Vinho")
         val destilada = idDaCategoria("Destilada")
         val gelo = idDaCategoria("Gelo")
         val refrigerante = idDaCategoria("Refrigerante")
+
+        adicionarProduto("Puro Malte", "350ml", "Cervejaria Noturna", 4.90, R.drawable.puro_malte, "Lager leve e refrescante, com final seco e pouco amargor. Ideal pra abrir a noite.",cerveja)
+        adicionarProduto("Vinho Tinto", "750ml", "Adega Vale Rubi", 32.90, R.drawable.vinho, "Tinto seco de corpo médio, com aroma de frutas vermelhas e taninos macios. Combina com massas e carnes.", vinho)
+        adicionarProduto("Energético", "2L", "Distribuidora Vo", 22.90, R.drawable.energetico, "Energético gelado de sabor intenso e cítrico, em garrafa de 2L. Rende para a galera toda.", refrigerante)
+        adicionarProduto("Cerveja Long Neck", "355ml", "Boteco Gelada", 7.90, R.drawable.cerveja, "Pilsen leve em long neck, sempre gelada. Boa pedida pro churrasco e pro fim de tarde.", cerveja)
+        adicionarProduto("Whisky", "1L", "Casa Highland", 89.90, R.drawable.whisky, "Blend suave com notas de baunilha e madeira. Para tomar puro, com gelo ou em drinks.", destilada)
 
         adicionarProduto("Vodka", "1L", "Distribuidora Polar", 45.90, R.drawable.vodka, "20", "Destilado cristalino de sabor limpo. Base perfeita para drinks e caipiroskas.", destilada)
         adicionarProduto("Gin", "750ml", "Botânico Gin Club", 79.90, R.drawable.gin, "10", "Notas de zimbro com toques cítricos e botânicos. Combina com tônica gelada e uma rodela de limão.", destilada)
@@ -98,7 +111,7 @@ class LojaViewModel : ViewModel() {
         return produtos.find { it.id == id }
     }
 
-    fun adicionarCategoria(nome: String, icone: Int, cor: Color) {
+    fun adicionarCategoria(nome: String, icone: ImageVector, cor: Color) {
         categorias.add(Categoria(gerarIdDaCategoria(), nome, icone, cor))
     }
 
@@ -107,7 +120,7 @@ class LojaViewModel : ViewModel() {
         produtos.removeAll { it.categoriaId == id }
     }
 
-    fun editarCategoria(id: Int, nome: String, icone: Int, cor: Color) {
+    fun editarCategoria(id: Int, nome: String, icone: ImageVector, cor: Color) {
         val i = categorias.indexOfFirst { it.id == id }
         if (i != -1) categorias[i] = categorias[i].copy(
             nome = nome, icone = icone, cor = cor
@@ -116,6 +129,34 @@ class LojaViewModel : ViewModel() {
 
     fun buscarCategoria(id: Int): Categoria? {
         return categorias.find { it.id == id }
+    }
+
+    fun adicionarAoCarrinho(produtoId: Int, quantidade: Int = 1) {
+        val i = carrinho.indexOfFirst { it.produtoId == produtoId }
+        if (i == -1) {
+            carrinho.add(ItemCarrinho(produtoId, quantidade))
+        } else {
+            carrinho[i] = carrinho[i].copy(quantidade = carrinho[i].quantidade + quantidade)
+        }
+    }
+
+    fun alterarQuantidadeNoCarrinho(produtoId: Int, quantidade: Int) {
+        if (quantidade <= 0) { removerDoCarrinho(produtoId); return }
+        val i = carrinho.indexOfFirst { it.produtoId == produtoId }
+        if (i != -1) carrinho[i] = carrinho[i].copy(quantidade = quantidade)
+    }
+
+    fun removerDoCarrinho(produtoId: Int) {
+        carrinho.removeAll { it.produtoId == produtoId }
+    }
+
+    fun subtotalCarrinho(): Double {
+        var subTotal = 0.0
+        carrinho.forEach {
+            val preco = buscarProduto(it.produtoId)?.preco ?: 0.0
+            subTotal += it.quantidade * preco
+        }
+        return subTotal
     }
 
     private fun gerarIdDoProduto(): Int {
@@ -138,18 +179,10 @@ class LojaViewModel : ViewModel() {
 
     fun calculaQuantidadeItensComprados(): Int {
         var quantidade = 0
-        itensComprados.forEach {
-            quantidade += it.quantidadeItens
+        carrinho.forEach {
+            quantidade += it.quantidade
         }
         return quantidade
-    }
-
-    fun calculaValorTotalItensComprados(): Double {
-        var valorTotal = 0.0
-        itensComprados.forEach {
-            valorTotal += it.quantidadeItens * it.valorTotal
-        }
-        return valorTotal
     }
 
     fun calculaValorDaEntrega(): Double {
@@ -158,7 +191,7 @@ class LojaViewModel : ViewModel() {
     }
 
     fun calculaValorTotal(): Double {
-        val valorTotal = calculaValorTotalItensComprados() + calculaValorDaEntrega()
+        val valorTotal = subtotalCarrinho() + calculaValorDaEntrega()
         return valorTotal
     }
 }

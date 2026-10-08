@@ -17,6 +17,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.PedalBike
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -29,19 +37,21 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.model.EstadoEtapa
-import com.example.myapplication.ui.components.CabecalhoTela
+import com.example.myapplication.ui.components.TopBarTela
 
 @Composable
 fun TelaRastreio(onVoltar:() -> Unit) {
-    Scaffold () { innerPadding ->
+    Scaffold (
+        topBar = { TopBarTela("Pedido", onVoltar) }
+    ) { innerPadding ->
         Surface(
             modifier = Modifier
                 .padding(innerPadding)
@@ -54,10 +64,6 @@ fun TelaRastreio(onVoltar:() -> Unit) {
                     .verticalScroll(rememberScrollState())
                     .padding(16.dp)
             ) {
-                CabecalhoTela("Rastreio", onVoltar)
-
-                Spacer(modifier = Modifier.height(16.dp))
-
                 MapaEntrega()
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -107,7 +113,7 @@ fun MapaEntrega() {
         }
 
         Icon(
-            painter = painterResource(id = R.drawable.baseline_location_on_24),
+            imageVector = Icons.Filled.LocationOn,
             contentDescription = "Localização da entrega",
             tint = Color(0xFF1976D2),
             modifier = Modifier
@@ -124,7 +130,7 @@ fun MapaEntrega() {
                 .background(Color(0xFFFF7043), shape = CircleShape)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.bike_24),
+                imageVector = Icons.Filled.PedalBike,
                 contentDescription = "Entregador a caminho",
                 tint = Color.Black,
                 modifier = Modifier.size(22.dp)
@@ -160,13 +166,13 @@ fun EtapasPedido() {
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        EtapaPedido(R.drawable.check_24, "Confirmado", EstadoEtapa.CONCLUIDA, Modifier.weight(1f))
+        EtapaPedido(Icons.Default.Check, "Confirmado", EstadoEtapa.CONCLUIDA, Modifier.weight(1f))
         LinhaConectora(concluida = true)
-        EtapaPedido(R.drawable.check_24, "Preparando", EstadoEtapa.CONCLUIDA, Modifier.weight(1f))
+        EtapaPedido(Icons.Default.Check, "Preparando", EstadoEtapa.CONCLUIDA, Modifier.weight(1f))
         LinhaConectora(concluida = true)
-        EtapaPedido(R.drawable.bike_24, "A caminho", EstadoEtapa.ATUAL, Modifier.weight(1f))
+        EtapaPedido(Icons.Default.PedalBike, "A caminho", EstadoEtapa.ATUAL, Modifier.weight(1f))
         LinhaConectora(concluida = false)
-        EtapaPedido(R.drawable.home_24, "Entregue", EstadoEtapa.PENDENTE, Modifier.weight(1f))
+        EtapaPedido(Icons.Default.Home, "Entregue", EstadoEtapa.PENDENTE, Modifier.weight(1f))
     }
 }
 
@@ -181,7 +187,7 @@ fun LinhaConectora(concluida: Boolean) {
 }
 
 @Composable
-fun EtapaPedido(icone: Int, texto: String, estado: EstadoEtapa, modifier: Modifier = Modifier) {
+fun EtapaPedido(icone: ImageVector, texto: String, estado: EstadoEtapa, modifier: Modifier = Modifier) {
     val cor = when (estado) {
         EstadoEtapa.CONCLUIDA -> Color(0xFF4CAF50)
         EstadoEtapa.ATUAL -> Color(0xFFE53935)
@@ -232,7 +238,7 @@ fun EtapaPedido(icone: Int, texto: String, estado: EstadoEtapa, modifier: Modifi
                 }
         ) {
             Icon(
-                painter = painterResource(id = icone),
+                imageVector = icone,
                 contentDescription = texto,
                 tint = corIcone,
                 modifier = Modifier.size(20.dp)
@@ -266,7 +272,7 @@ fun CardEntregador() {
                 .background(Color(0xFFD6EFFB), shape = CircleShape)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.person_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                imageVector = Icons.Filled.Person,
                 contentDescription = "Foto do entregador",
                 tint = Color.Black,
                 modifier = Modifier.size(24.dp)
@@ -289,23 +295,23 @@ fun CardEntregador() {
         }
 
         BotaoIconeCircular(
-            icone = R.drawable.call_24,
-            descricao = "Ligar para o entregador",
+            Icons.Default.Call,
+            "Ligar para o entregador",
             onClick = {}
         )
 
         Spacer(modifier = Modifier.width(8.dp))
 
         BotaoIconeCircular(
-            icone = R.drawable.chat_24,
-            descricao = "Enviar mensagem para o entregador",
+            Icons.AutoMirrored.Filled.Chat,
+            "Enviar mensagem para o entregador",
             onClick = {}
         )
     }
 }
 
 @Composable
-fun BotaoIconeCircular(icone: Int, descricao: String, onClick: () -> Unit) {
+fun BotaoIconeCircular(icone: ImageVector, descricao: String, onClick: () -> Unit) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -315,7 +321,7 @@ fun BotaoIconeCircular(icone: Int, descricao: String, onClick: () -> Unit) {
             .clickable(onClick = onClick)
     ) {
         Icon(
-            painter = painterResource(id = icone),
+            imageVector = icone,
             contentDescription = descricao,
             tint = Color.Black,
             modifier = Modifier.size(18.dp)

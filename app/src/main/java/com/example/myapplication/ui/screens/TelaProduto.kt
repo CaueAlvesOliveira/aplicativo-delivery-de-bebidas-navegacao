@@ -1,6 +1,5 @@
 package com.example.myapplication.ui.screens
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +18,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -38,16 +42,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapplication.R
 import com.example.myapplication.model.Produto
 import com.example.myapplication.ui.components.BotaoVoltar
 import com.example.myapplication.viewmodel.LojaViewModel
@@ -105,6 +108,7 @@ fun TelaProduto(
                     produto = produto,
                     quantidade = quantidade,
                     onAdicionar = {
+                        viewModel.adicionarAoCarrinho(produto.id, quantidade)
                         Toast.makeText(contexto, "Produto adicionado ao carrinho", Toast.LENGTH_SHORT).show()
                         irParaCarrinho()
                     }
@@ -127,7 +131,7 @@ fun BotaoFavorito() {
             .border(1.dp, Color.LightGray, shape = CircleShape),
     ) {
         Icon(
-            painter = if (favoritado) painterResource(id = R.drawable.favorite_fill24) else painterResource(id = R.drawable.favorite_24),
+            imageVector = if (favoritado) Icons.Filled.Favorite else Icons.Outlined.Favorite,
             contentDescription = "Favoritar produto",
             tint = Color(0xFFE53935),
         )
@@ -227,7 +231,7 @@ fun SeletorQuantidade(
                 .padding(horizontal = 8.dp, vertical = 8.dp)
         ) {
             BotaoQuantidade(
-                icone = R.drawable.remove_24,
+                Icons.Default.Remove,
                 descricao = "Diminuir quantidade",
                 onClick = { if (quantidade > 1) onQuantidadeChange(quantidade - 1) }
             )
@@ -241,7 +245,7 @@ fun SeletorQuantidade(
             )
 
             BotaoQuantidade(
-                icone = R.drawable.add_24,
+                Icons.Default.Add,
                 descricao = "Aumentar quantidade",
                 onClick = { onQuantidadeChange(quantidade + 1) }
             )
@@ -250,7 +254,7 @@ fun SeletorQuantidade(
 }
 
 @Composable
-fun BotaoQuantidade(icone: Int, descricao: String, onClick: () -> Unit) {
+fun BotaoQuantidade(icone: ImageVector, descricao: String, onClick: () -> Unit) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -260,7 +264,7 @@ fun BotaoQuantidade(icone: Int, descricao: String, onClick: () -> Unit) {
             .clickable(onClick = onClick)
     ) {
         Icon(
-            painter = painterResource(id = icone),
+            imageVector = icone,
             contentDescription = descricao,
             tint = Color.Black,
             modifier = Modifier.size(14.dp)

@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,6 +22,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Liquor
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
@@ -45,7 +57,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
@@ -57,25 +71,24 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.model.Categoria
+import com.example.myapplication.model.ItemBarra
 import com.example.myapplication.model.Produto
 import com.example.myapplication.navegacao.rotas.Rotas
 import com.example.myapplication.viewmodel.LojaViewModel
 import java.util.Locale
 
-@Preview
-@Composable
-fun TelaInicioPreview() {
-    telaInicio(
-        navController = rememberNavController(),
-        viewModel = LojaViewModel()
-    )
-}
-
 @Composable
 fun telaInicio(navController: NavController, viewModel: LojaViewModel) {
+
+    val contexto = LocalContext.current
+
     Scaffold(
         bottomBar = {
-            BarraDeNavegacaoInferior(onProdutos = { navController.navigate(Rotas.PRODUTOS) })
+            BarraDeNavegacaoInferior(
+                onProdutos = { navController.navigate(Rotas.PRODUTOS) },
+                onCarrinho = { navController.navigate(Rotas.CARRINHO) },
+                onPedidos = {navController.navigate(Rotas.RASTREIO)}
+            )
         },
         contentColor = Color.Black
     ) {innerPadding ->
@@ -124,7 +137,10 @@ fun telaInicio(navController: NavController, viewModel: LojaViewModel) {
                 ListaMaisPedidos(
                     viewModel.produtosNormais(),
                     onProdutoClick = {id -> navController.navigate(Rotas.produto(id))},
-                    onAdicionar = {}
+                    onAdicionar = {id ->
+                        viewModel.adicionarAoCarrinho(id)
+                        Toast.makeText(contexto, "Produto adicionado ao carrinho", Toast.LENGTH_SHORT).show()
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -132,7 +148,11 @@ fun telaInicio(navController: NavController, viewModel: LojaViewModel) {
                 ListaOfertas(
                     viewModel.produtosOferta(),
                     onProdutoClick = {id -> navController.navigate(Rotas.produto(id))},
-                    onAdicionar = {}
+                    onAdicionar = {id ->
+                        viewModel.adicionarAoCarrinho(id)
+                        Toast.makeText(contexto, "Produto adicionado ao carrinho", Toast.LENGTH_SHORT).show()
+                    }
+
                 )
             }
         }
@@ -145,7 +165,7 @@ fun telaInicio(navController: NavController, viewModel: LojaViewModel) {
 fun EnderecoComponente() {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
-            painter = painterResource(id = R.drawable.baseline_location_on_24),
+            imageVector = Icons.Filled.LocationOn,
             contentDescription = "Ícone de endereço de entrega",
             tint = Color(16, 129, 225)
         )
@@ -181,7 +201,7 @@ fun IconeNotificacoes() {
             .border(1.dp,Color.LightGray, shape = CircleShape)
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.notifications_24dp),
+            imageVector = Icons.Outlined.Notifications,
             contentDescription = "Ícone de notificações",
             tint = Color.Black,
             modifier = Modifier.size(20.dp)
@@ -205,7 +225,7 @@ fun BarraPesquisa() {
         },
         leadingIcon = {
             Icon(
-                painter = painterResource(id = R.drawable.search_24),
+                imageVector = Icons.Outlined.Search,
                 contentDescription = "Ícone de pesquisa",
                 tint = Color.Black
             )
@@ -288,7 +308,7 @@ fun ItemCategoria(categoria: Categoria, onClick: () -> Unit = {}) {
                     .background(Color(255,255,255), shape = CircleShape)
             ) {
                 Icon(
-                    painter = painterResource(id = categoria.icone),
+                    imageVector = categoria.icone,
                     contentDescription = "Icone categoria",
                     tint = categoria.cor,
                     modifier = Modifier.size(24.dp)
@@ -434,7 +454,7 @@ fun CardProduto(
                 .clickable{onAdicionar()}
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.add_24),
+                imageVector = Icons.Filled.Add,
                 contentDescription = "Adicionar",
                 tint = Color.Black,
                 modifier = Modifier.size(14.dp)
@@ -526,7 +546,7 @@ fun CardProdutoOferta(
                 .clickable {onAdicionar()}
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.add_24),
+                imageVector = Icons.Filled.Add,
                 contentDescription = "Adicionar",
                 tint = Color.Black,
                 modifier = Modifier.size(14.dp)
@@ -555,32 +575,39 @@ fun CardProdutoOferta(
 }
 
 @Composable
-fun BarraDeNavegacaoInferior(onProdutos: () -> Unit = {}) {
+fun BarraDeNavegacaoInferior(
+    onProdutos: () -> Unit = {},
+    onCarrinho: () -> Unit = {},
+    onPedidos: () -> Unit = {}
+) {
     var itemSelecionado by remember { mutableIntStateOf(0) }
 
-    val itens = listOf<Triple<String, Int, Int>>(
-        Triple("Início", R.drawable.home_24, 0),
-        Triple("Buscar", R.drawable.search_24, 1),
-        Triple("Pedidos", R.drawable.list_24, 2),
-        Triple("Produtos", R.drawable.liquor_24, 3),
-        Triple("Perfil", R.drawable.person_24dp_e3e3e3_fill0_wght400_grad0_opsz24, 4)
+    val itens = listOf(
+        ItemBarra("Início", Icons.Outlined.Home),
+        ItemBarra("Carrinho", Icons.Outlined.ShoppingCart, onCarrinho),
+        ItemBarra("Pedidos", Icons.AutoMirrored.Filled.List, onPedidos),
+        ItemBarra("Produtos", Icons.Outlined.Liquor, onProdutos),
+        ItemBarra("Perfil", Icons.Outlined.Person)
     )
 
-    NavigationBar (
+    NavigationBar(
         containerColor = Color.White
     ) {
-        itens.forEach { (nome, icone, index) ->
+        itens.forEachIndexed { index, item ->
             NavigationBarItem(
                 selected = itemSelecionado == index,
                 onClick = {
                     itemSelecionado = index
-                    if (nome == "Produtos") onProdutos()
+                    item.onClick()
                 },
                 icon = {
-                    Icon(painter = painterResource(id = icone), contentDescription = nome)
+                    Icon(
+                        imageVector = item.icone,
+                        contentDescription = item.nome
+                    )
                 },
                 label = {
-                    Text(text = nome)
+                    Text(text = item.nome)
                 },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = Color(0xFFFF7043),

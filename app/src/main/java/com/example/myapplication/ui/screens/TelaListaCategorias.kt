@@ -47,9 +47,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.model.Categoria
+import com.example.myapplication.ui.components.TopBarTela
 import com.example.myapplication.viewmodel.LojaViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaListaCategorias(
     viewModel: LojaViewModel,
@@ -62,24 +62,7 @@ fun TelaListaCategorias(
     var categoriaParaExcluir by remember { mutableStateOf<Categoria?>(null) }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Categorias", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onVoltar) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrow_back),
-                            contentDescription = "Voltar"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFECECEC),
-                    titleContentColor = Color.Black,
-                    navigationIconContentColor = Color.Black
-                )
-            )
-        },
+        topBar = { TopBarTela("Categorias", onVoltar) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onNovo,
@@ -159,7 +142,7 @@ private fun CardCategoriaLista(
                     .background(categoria.cor.copy(alpha = 0.15f), shape = CircleShape)
             ) {
                 Icon(
-                    painter = painterResource(id = categoria.icone),
+                    imageVector = categoria.icone,
                     contentDescription = "Ícone da categoria ${categoria.nome}",
                     tint = categoria.cor,
                     modifier = Modifier.size(24.dp)

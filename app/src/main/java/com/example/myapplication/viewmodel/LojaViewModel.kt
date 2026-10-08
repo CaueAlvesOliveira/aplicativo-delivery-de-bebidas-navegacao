@@ -30,19 +30,10 @@ class LojaViewModel : ViewModel() {
         val gelo = idDaCategoria("Gelo")
         val refrigerante = idDaCategoria("Refrigerante")
 
-        itensComprados.add(ItensComprados(2, 10.0))
-        itensComprados.add(ItensComprados(1, 5.0))
-
-        adicionarProduto("Puro Malte", "350ml", 4.90, R.drawable.puro_malte, cerveja)
-        adicionarProduto("Vinho Tinto", "750ml", 32.90, R.drawable.vinho, vinho)
-        adicionarProduto("Energético", "2L", 22.90, R.drawable.energetico, refrigerante)
-        adicionarProduto("Cerveja Long Neck", "355ml", 7.90, R.drawable.cerveja, cerveja)
-        adicionarProduto("Whisky", "1L", 89.90, R.drawable.whisky, destilada)
-
-        adicionarProduto("Vodka", "1L", 45.90, R.drawable.vodka, "20", destilada)
-        adicionarProduto("Gin", "750ml", 79.90, R.drawable.gin, "10", destilada)
-        adicionarProduto("Cachaça", "700ml", 24.90, R.drawable.cachaca, "30", destilada)
-        adicionarProduto("Coca Cola", "2L", 9.90, R.drawable.refrigerante, "35", refrigerante)
+        adicionarProduto("Vodka", "1L", "Distribuidora Polar", 45.90, R.drawable.vodka, "20", "Destilado cristalino de sabor limpo. Base perfeita para drinks e caipiroskas.", destilada)
+        adicionarProduto("Gin", "750ml", "Botânico Gin Club", 79.90, R.drawable.gin, "10", "Notas de zimbro com toques cítricos e botânicos. Combina com tônica gelada e uma rodela de limão.", destilada)
+        adicionarProduto("Cachaça", "700ml", "Alambique Serra Dourada", 24.90, R.drawable.cachaca, "30", "Cachaça de sabor suave e toque adocicado de madeira. Ótima pura ou na caipirinha.", destilada)
+        adicionarProduto("Coca Cola", "2L", "Mercearia Dois Irmãos", 9.90, R.drawable.refrigerante, "35", "Refrigerante sabor cola, bem gelado e com gás. Perfeito para acompanhar pizza ou lanche.", refrigerante)
     }
 
     fun produtosOferta(): List<Produto> {
@@ -53,22 +44,53 @@ class LojaViewModel : ViewModel() {
         return produtos.filter { it.desconto.isNullOrBlank() }
     }
 
-    fun adicionarProduto(nome: String, volume: String, preco: Double, imagem: Int, desconto: String, categoriaId: Int) {
-        produtos.add(Produto(gerarIdDoProduto(), nome, volume, preco, imagem, desconto, categoriaId))
+    fun adicionarProduto(
+        nome: String,
+        volume: String,
+        estabelecimento: String,
+        preco: Double,
+        imagem: Int,
+        desconto: String,
+        descricao: String,
+        categoriaId: Int) {
+        produtos.add(Produto(gerarIdDoProduto(), nome, volume, estabelecimento, preco, imagem, desconto, descricao, categoriaId))
     }
 
-    fun adicionarProduto(nome: String, volume: String, preco: Double, imagem: Int, categoriaId: Int) {
-        produtos.add(Produto(gerarIdDoProduto(), nome, volume, preco, imagem, null, categoriaId))
+    fun adicionarProduto(
+        nome: String,
+        volume: String,
+        estabelecimento: String,
+        preco: Double,
+        imagem: Int,
+        descricao: String,
+        categoriaId: Int) {
+        produtos.add(Produto(gerarIdDoProduto(), nome, volume, estabelecimento, preco, imagem, null, descricao, categoriaId))
     }
 
     fun removerProduto(id: Int) {
         produtos.removeAll { it.id == id }
     }
 
-    fun editarProduto(id: Int, nome: String, volume: String, preco: Double, imagem: Int, categoriaId: Int) {
+    fun editarProduto(
+        id: Int,
+        nome: String,
+        volume: String,
+        estabelecimento: String,
+        preco: Double,
+        imagem: Int,
+        desconto: String?,
+        descricao: String,
+        categoriaId: Int) {
         val i = produtos.indexOfFirst { it.id == id }
         if (i != -1) produtos[i] = produtos[i].copy(
-            nome = nome, volume = volume, preco = preco, imagem = imagem, categoriaId = categoriaId
+            nome = nome,
+            volume = volume,
+            estabelecimento = estabelecimento,
+            preco = preco,
+            imagem = imagem,
+            desconto = desconto,
+            descricao = descricao,
+            categoriaId = categoriaId
         )
     }
 

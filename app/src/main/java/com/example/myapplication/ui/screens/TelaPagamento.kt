@@ -38,21 +38,19 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.example.myapplication.ui.components.CabecalhoTela
 import com.example.myapplication.viewmodel.LojaViewModel
+import kotlin.random.Random
 
 
 @Composable
-fun TelaPagamento(navController: NavController){
+fun TelaPagamento(onVoltar: () -> Unit, navController: NavController){
 
     Scaffold(){ innerPadding ->
-
-        Column( modifier = Modifier.padding(innerPadding)) {
-            Row(
-                modifier = Modifier.padding(16.dp, 15.dp, 10.dp, 0.dp)
-            ) {
-                BotaoVoltar()
-                TextoTitulo()
-            }
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            CabecalhoTela("Pagamento", onVoltar)
 
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -65,12 +63,6 @@ fun TelaPagamento(navController: NavController){
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun TelaPagamentoPreview() {
-    TelaPagamento(rememberNavController())
 }
 
 @Composable

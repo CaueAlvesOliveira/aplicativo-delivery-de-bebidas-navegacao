@@ -37,10 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.example.myapplication.model.EstadoEtapa
+import com.example.myapplication.ui.components.CabecalhoTela
 
-@Preview
 @Composable
-fun TelaRastreio() {
+fun TelaRastreio(onVoltar:() -> Unit) {
     Scaffold () { innerPadding ->
         Surface(
             modifier = Modifier
@@ -54,7 +54,7 @@ fun TelaRastreio() {
                     .verticalScroll(rememberScrollState())
                     .padding(16.dp)
             ) {
-                CabecalhoPedidos()
+                CabecalhoTela("Rastreio", onVoltar)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -73,24 +73,6 @@ fun TelaRastreio() {
                 CardEntregador()
             }
         }
-    }
-}
-
-@Composable
-fun CabecalhoPedidos() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        BotaoVoltar()
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Text(
-            text = "Pedidos",
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold
-        )
     }
 }
 

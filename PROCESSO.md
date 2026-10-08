@@ -24,3 +24,17 @@ A primeira modificação em relação a primeira parte do trabalho será transfo
 Em seguida mudamos o appNavigation para criar o navController e ViewModel que serão passados para as telas como parâmetros. Agora as funções que antes utilizavam as listas estáticas criadas no próprio arquivo da tela inicial apenas chamam as funções do ViewModel. Visualmente a tela continua igual, porém com um fluxo diferente do anterior, e também o aplicativo abre automaticamente na tela inicial.
 
 ![print da tela inicial com as listas mutáveis](anexos/processo/prints/TelaInicialListasMutaveis.png)
+
+Em seguida criamos a navegação dos cards dos produtos, agora quando clicamos em card somos direcionados a tela de detalhes do produto com informações específicas dele. Abaixo segue o vídeo demonstrando essa parte:
+
+[![video das cards](https://drive.google.com/file/d/1lYTXZ0beDkiBo1q8j-sM-e2JDRqZAnHU/view?usp=sharing)](https://drive.google.com/file/d/1lYTXZ0beDkiBo1q8j-sM-e2JDRqZAnHU/view?usp=sharing)
+
+Para cumprir com os requisitos do trabalho foi necessário criar duas telas que mostram os produtos e categorias utilizando LazyColumns e que permitem a alteração dos objetos com os métodos do CRUD em ViewModel. Nessas telas podemos adicionar, editar e excluir os elementos das listas, para isso existe uma segunda tela de formulário, que já vem completa com as informações se a escolha for editar um item que já existe ou então em branco para adicionar novo item.
+
+![print lista dos produtos](anexos/processo/prints/TelaListaProdutos.png)
+
+![print editar produtos](anexos/processo/prints/EditarProduto.png)
+
+![print lista de categorias](anexos/processo/prints/TelaListaCategorias.png)
+
+![print adicionar categoria](anexos/processo/prints/AdicionarCategoria.png)

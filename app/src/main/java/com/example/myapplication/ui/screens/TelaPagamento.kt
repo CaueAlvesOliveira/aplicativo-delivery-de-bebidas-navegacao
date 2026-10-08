@@ -35,10 +35,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.myapplication.navegacao.rotas.Rotas
 import com.example.myapplication.ui.components.TopBarTela
+import com.example.myapplication.viewmodel.LojaViewModel
 
 @Composable
-fun TelaPagamento(onVoltar: () -> Unit, navController: NavController){
+fun TelaPagamento(onVoltar: () -> Unit, navController: NavController, viewModel: LojaViewModel){
 
     Scaffold(
         topBar = {
@@ -57,7 +59,7 @@ fun TelaPagamento(onVoltar: () -> Unit, navController: NavController){
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CardsModeloPagamento()
-                CardResumo()
+                CardResumo(viewModel)
                 Spacer(modifier = Modifier.padding(0.dp, 70.dp))
                 BotaoConfirmarPagamento(navController)
             }
@@ -131,12 +133,12 @@ fun CardsModeloPagamento() {
 }
 
 @Composable
-fun CardResumo(viewModel: LojaViewModel = viewModel()){
+fun CardResumo(viewModel: LojaViewModel){
 
     var itemSelecionado by remember { mutableStateOf(0) }
 
     val quantidadeItens = viewModel.calculaQuantidadeItensComprados()
-    val valorTotalProdutos = viewModel.calculaValorTotalItensComprados()
+    val valorTotalProdutos = viewModel.subtotalCarrinho()
     val valorEntrega = viewModel.calculaValorDaEntrega()
     val valorTotal = viewModel.calculaValorTotal()
 
@@ -217,7 +219,7 @@ fun BotaoConfirmarPagamento(navController: NavController){
         Button(
             onClick = {
                 try {
-                    navController.navigate("rastreio")
+                    navController.navigate(Rotas.RASTREIO)
                 } catch (_: Exception) {
                     throw Exception("Erro ao navegar para a tela de rastreio")
                 }

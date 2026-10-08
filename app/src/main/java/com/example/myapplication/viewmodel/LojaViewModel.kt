@@ -37,6 +37,12 @@ class LojaViewModel : ViewModel() {
         val gelo = idDaCategoria("Gelo")
         val refrigerante = idDaCategoria("Refrigerante")
 
+        adicionarProduto("Puro Malte", "350ml", "Cervejaria Noturna", 4.90, R.drawable.puro_malte, "Lager leve e refrescante, com final seco e pouco amargor. Ideal pra abrir a noite.",cerveja)
+        adicionarProduto("Vinho Tinto", "750ml", "Adega Vale Rubi", 32.90, R.drawable.vinho, "Tinto seco de corpo médio, com aroma de frutas vermelhas e taninos macios. Combina com massas e carnes.", vinho)
+        adicionarProduto("Energético", "2L", "Distribuidora Vo", 22.90, R.drawable.energetico, "Energético gelado de sabor intenso e cítrico, em garrafa de 2L. Rende para a galera toda.", refrigerante)
+        adicionarProduto("Cerveja Long Neck", "355ml", "Boteco Gelada", 7.90, R.drawable.cerveja, "Pilsen leve em long neck, sempre gelada. Boa pedida pro churrasco e pro fim de tarde.", cerveja)
+        adicionarProduto("Whisky", "1L", "Casa Highland", 89.90, R.drawable.whisky, "Blend suave com notas de baunilha e madeira. Para tomar puro, com gelo ou em drinks.", destilada)
+
         adicionarProduto("Vodka", "1L", "Distribuidora Polar", 45.90, R.drawable.vodka, "20", "Destilado cristalino de sabor limpo. Base perfeita para drinks e caipiroskas.", destilada)
         adicionarProduto("Gin", "750ml", "Botânico Gin Club", 79.90, R.drawable.gin, "10", "Notas de zimbro com toques cítricos e botânicos. Combina com tônica gelada e uma rodela de limão.", destilada)
         adicionarProduto("Cachaça", "700ml", "Alambique Serra Dourada", 24.90, R.drawable.cachaca, "30", "Cachaça de sabor suave e toque adocicado de madeira. Ótima pura ou na caipirinha.", destilada)
@@ -144,8 +150,14 @@ class LojaViewModel : ViewModel() {
         carrinho.removeAll { it.produtoId == produtoId }
     }
 
-    fun subtotalCarrinho(): Double =
-        carrinho.sumOf { (buscarProduto(it.produtoId)?.preco ?: 0.0) * it.quantidade }
+    fun subtotalCarrinho(): Double {
+        var subTotal = 0.0
+        carrinho.forEach {
+            val preco = buscarProduto(it.produtoId)?.preco ?: 0.0
+            subTotal += it.quantidade * preco
+        }
+        return subTotal
+    }
 
     private fun gerarIdDoProduto(): Int {
         if (produtos.isEmpty()) {
@@ -167,18 +179,10 @@ class LojaViewModel : ViewModel() {
 
     fun calculaQuantidadeItensComprados(): Int {
         var quantidade = 0
-        itensComprados.forEach {
-            quantidade += it.quantidadeItens
+        carrinho.forEach {
+            quantidade += it.quantidade
         }
         return quantidade
-    }
-
-    fun calculaValorTotalItensComprados(): Double {
-        var valorTotal = 0.0
-        itensComprados.forEach {
-            valorTotal += it.quantidadeItens * it.valorTotal
-        }
-        return valorTotal
     }
 
     fun calculaValorDaEntrega(): Double {
@@ -187,7 +191,7 @@ class LojaViewModel : ViewModel() {
     }
 
     fun calculaValorTotal(): Double {
-        val valorTotal = calculaValorTotalItensComprados() + calculaValorDaEntrega()
+        val valorTotal = subtotalCarrinho() + calculaValorDaEntrega()
         return valorTotal
     }
 }

@@ -59,7 +59,7 @@ fun NavagacaoEntreTela() {
             onVoltar = {navInterno.popBackStack()},
             onIrParaPagamento = {navInterno.navigate(Rotas.PAGAMENTO)}
         ) }
-        composable(Rotas.PAGAMENTO){ TelaPagamento(onVoltar = {navInterno.popBackStack()}) }
+        composable(Rotas.PAGAMENTO){ TelaPagamento(onVoltar = {navInterno.popBackStack()}, navInterno, viewModel) }
         composable(Rotas.RASTREIO){ TelaRastreio(onVoltar = {navInterno.popBackStack()}) }
         composable(Rotas.CATEGORIAS) {
             TelaListaCategorias(

@@ -111,7 +111,7 @@ fun TelaCarrinho(
 
                 ResumoDoPedido(
                     subtotal = viewModel.subtotalCarrinho(),
-                    taxaEntrega = 0.0,
+                    taxaEntrega = viewModel.calculaValorDaEntrega(),
                     onIrParaPagamento = onIrParaPagamento
                 )
             }
